@@ -17,17 +17,24 @@ import { User, City, TrainingType, Venue, Trainer, Schedule, Review } from './en
     ConfigModule.forRoot({ isGlobal: true }),
     TypeOrmModule.forRootAsync({
       inject: [ConfigService],
-      useFactory: (config: ConfigService) => ({
-        type: 'postgres',
-        host: config.get('POSTGRES_HOST', 'localhost'),
-        port: config.get<number>('POSTGRES_PORT', 5432),
-        username: config.get('POSTGRES_USER', 'fitmap'),
-        password: config.get('POSTGRES_PASSWORD', 'fitmap_dev'),
-        database: config.get('POSTGRES_DB', 'fitmap'),
-        entities: [User, City, TrainingType, Venue, Trainer, Schedule, Review],
-        migrations: ['dist/migrations/*.js'],
-        migrationsRun: true,
-      }),
+      useFactory: (config: ConfigService) => {
+        const databaseUrl = config.get<string>('DATABASE_URL');
+        return {
+          type: 'postgres' as const,
+          ...(databaseUrl
+            ? { url: databaseUrl }
+            : {
+                host: config.get('POSTGRES_HOST', 'localhost'),
+                port: config.get<number>('POSTGRES_PORT', 5432),
+                username: config.get('POSTGRES_USER', 'fitmap'),
+                password: config.get('POSTGRES_PASSWORD', 'fitmap_dev'),
+                database: config.get('POSTGRES_DB', 'fitmap'),
+              }),
+          entities: [User, City, TrainingType, Venue, Trainer, Schedule, Review],
+          migrations: ['dist/migrations/*.js'],
+          migrationsRun: true,
+        };
+      },
     }),
     AuthModule,
     CitiesModule,

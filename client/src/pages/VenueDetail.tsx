@@ -122,7 +122,7 @@ export default function VenueDetail() {
               {venue.photos.map((photo, i) => (
                 <div key={photo} className="gallery-item">
                   <img
-                    src={photo.startsWith('/') ? `http://localhost:3000${photo}` : photo}
+                    src={photo.startsWith('/') ? `${import.meta.env.VITE_API_URL ?? 'http://localhost:3000'}${photo}` : photo}
                     alt={`${venue.name} photo ${i + 1}`}
                     onClick={() => setLightbox(i)}
                   />
@@ -160,7 +160,7 @@ export default function VenueDetail() {
           <img
             src={
               venue.photos[lightbox].startsWith('/')
-                ? `http://localhost:3000${venue.photos[lightbox]}`
+                ? `${import.meta.env.VITE_API_URL ?? 'http://localhost:3000'}${venue.photos[lightbox]}`
                 : venue.photos[lightbox]
             }
             alt={`${venue.name} photo ${lightbox + 1}`}

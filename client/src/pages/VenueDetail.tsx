@@ -4,6 +4,7 @@ import { venuesApi, type Venue } from '../api/venues';
 import { reviewsApi, type Review } from '../api/reviews';
 import { schedulesApi, dayName, type Schedule } from '../api/schedules';
 import { useAuth } from '../context/AuthContext';
+import { VenueMap } from '../components/Map';
 
 export default function VenueDetail() {
   const { id } = useParams<{ id: string }>();
@@ -209,6 +210,11 @@ export default function VenueDetail() {
           </div>
         )}
       </div>
+
+      <section className="section">
+        <h2>Location</h2>
+        <VenueMap lat={Number(venue.latitude)} lng={Number(venue.longitude)} name={venue.name} />
+      </section>
 
       {schedules.length > 0 && (
         <section className="section">

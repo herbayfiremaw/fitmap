@@ -1,23 +1,45 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useMemo, lazy, Suspense } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { citiesApi, type City } from '../api/cities';
 import { trainingTypesApi, type TrainingType } from '../api/training-types';
 import { venuesApi, type Venue } from '../api/venues';
+import type { MapMarker } from '../components/Map';
 import fullLogo from '../assets/fitmap-logo-full.svg';
+
+const LazyVenuesMap = lazy(() =>
+  import('../components/Map').then((m) => ({ default: m.VenuesMap })),
+);
 
 export default function Home() {
   const navigate = useNavigate();
   const [cities, setCities] = useState<City[]>([]);
   const [trainingTypes, setTrainingTypes] = useState<TrainingType[]>([]);
-  const [featuredVenues, setFeaturedVenues] = useState<Venue[]>([]);
+  const [venues, setVenues] = useState<Venue[]>([]);
 
   useEffect(() => {
     citiesApi.getAll().then(setCities);
     trainingTypesApi.getAll().then(setTrainingTypes);
-    venuesApi.getAll().then((venues) =>
-      setFeaturedVenues(venues.filter((v) => v.is_featured).slice(0, 6)),
-    );
+    venuesApi.getAll().then(setVenues);
   }, []);
+
+  const featuredVenues = useMemo(
+    () => venues.filter((v) => v.is_featured).slice(0, 6),
+    [venues],
+  );
+
+  const markers: MapMarker[] = useMemo(
+    () =>
+      venues
+        .filter((v) => v.latitude && v.longitude)
+        .map((v) => ({
+          id: v.id,
+          lat: Number(v.latitude),
+          lng: Number(v.longitude),
+          name: v.name,
+          label: v.city?.name_en,
+        })),
+    [venues],
+  );
 
   return (
     <div className="home">
@@ -51,6 +73,20 @@ export default function Home() {
           ))}
         </div>
       </section>
+
+      {markers.length > 0 && (
+        <section className="section">
+          <h2>Explore Venues on the Map</h2>
+          <div className="home-map-wrapper">
+            <Suspense fallback={<div style={{ height: 500 }}>Loading map...</div>}>
+              <LazyVenuesMap
+                markers={markers}
+                onMarkerClick={(id) => navigate(`/venues/${id}`)}
+              />
+            </Suspense>
+          </div>
+        </section>
+      )}
 
       <section className="section">
         <h2>Training Types</h2>

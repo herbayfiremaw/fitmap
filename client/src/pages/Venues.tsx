@@ -1,15 +1,18 @@
 import { useEffect, useState, useMemo } from 'react';
-import { Link, useSearchParams } from 'react-router-dom';
+import { Link, useSearchParams, useNavigate } from 'react-router-dom';
 import { venuesApi, type Venue } from '../api/venues';
 import { citiesApi, type City } from '../api/cities';
 import { trainingTypesApi, type TrainingType } from '../api/training-types';
+import { VenuesMap, type MapMarker } from '../components/Map';
 
 export default function Venues() {
+  const navigate = useNavigate();
   const [searchParams, setSearchParams] = useSearchParams();
   const [venues, setVenues] = useState<Venue[]>([]);
   const [cities, setCities] = useState<City[]>([]);
   const [trainingTypes, setTrainingTypes] = useState<TrainingType[]>([]);
   const [search, setSearch] = useState('');
+  const [showMap, setShowMap] = useState(false);
 
   const selectedCity = searchParams.get('city');
   const selectedType = searchParams.get('type');
@@ -48,9 +51,31 @@ export default function Venues() {
     setSearchParams(params);
   };
 
+  const markers: MapMarker[] = useMemo(
+    () =>
+      filtered
+        .filter((v) => v.latitude && v.longitude)
+        .map((v) => ({
+          id: v.id,
+          lat: Number(v.latitude),
+          lng: Number(v.longitude),
+          name: v.name,
+          label: v.city?.name_en,
+        })),
+    [filtered],
+  );
+
   return (
     <div className="venues-page">
-      <h1>Venues</h1>
+      <div className="venues-header">
+        <h1>Venues</h1>
+        <button
+          className={`btn ${showMap ? 'btn-primary' : 'btn-outline'}`}
+          onClick={() => setShowMap(!showMap)}
+        >
+          {showMap ? 'List View' : 'Map View'}
+        </button>
+      </div>
 
       <div className="filters">
         <input
@@ -88,9 +113,18 @@ export default function Venues() {
         </div>
       </div>
 
+      {showMap && markers.length > 0 && (
+        <div className="venues-map-wrapper">
+          <VenuesMap
+            markers={markers}
+            onMarkerClick={(id) => navigate(`/venues/${id}`)}
+          />
+        </div>
+      )}
+
       {filtered.length === 0 ? (
         <p className="no-results">No venues found</p>
-      ) : (
+      ) : !showMap ? (
         <div className="card-grid">
           {filtered.map((venue) => (
             <Link
@@ -118,7 +152,7 @@ export default function Venues() {
             </Link>
           ))}
         </div>
-      )}
+      ) : null}
     </div>
   );
 }

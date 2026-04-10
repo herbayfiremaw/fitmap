@@ -37,7 +37,7 @@ export default function Navbar() {
         {navLink('/venues', 'Venues')}
         {user ? (
           <>
-            <span>Hi, {user.name}</span>
+            {navLink('/profile', user.name)}
             <button onClick={() => { logout(); close(); }}>Log Out</button>
           </>
         ) : (

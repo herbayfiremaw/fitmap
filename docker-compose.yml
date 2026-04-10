@@ -27,6 +27,7 @@ services:
       POSTGRES_USER: fitmap
       POSTGRES_PASSWORD: fitmap_dev
       POSTGRES_DB: fitmap
+      JWT_SECRET: fitmap_jwt_dev_secret
     depends_on:
       postgres:
         condition: service_healthy

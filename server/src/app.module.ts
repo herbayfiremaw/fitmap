@@ -19,17 +19,22 @@ import { User, City, TrainingType, Venue, Trainer, Schedule, Review } from './en
       inject: [ConfigService],
       useFactory: (config: ConfigService) => {
         const databaseUrl = config.get<string>('DATABASE_URL');
+        if (databaseUrl) {
+          return {
+            type: 'postgres' as const,
+            url: databaseUrl,
+            entities: [User, City, TrainingType, Venue, Trainer, Schedule, Review],
+            migrations: ['dist/migrations/*.js'],
+            migrationsRun: true,
+          };
+        }
         return {
           type: 'postgres' as const,
-          ...(databaseUrl
-            ? { url: databaseUrl }
-            : {
-                host: config.get('POSTGRES_HOST', 'localhost'),
-                port: config.get<number>('POSTGRES_PORT', 5432),
-                username: config.get('POSTGRES_USER', 'fitmap'),
-                password: config.get('POSTGRES_PASSWORD', 'fitmap_dev'),
-                database: config.get('POSTGRES_DB', 'fitmap'),
-              }),
+          host: config.get<string>('POSTGRES_HOST', 'localhost'),
+          port: config.get<number>('POSTGRES_PORT', 5432),
+          username: config.get<string>('POSTGRES_USER', 'fitmap'),
+          password: config.get<string>('POSTGRES_PASSWORD', 'fitmap_dev'),
+          database: config.get<string>('POSTGRES_DB', 'fitmap'),
           entities: [User, City, TrainingType, Venue, Trainer, Schedule, Review],
           migrations: ['dist/migrations/*.js'],
           migrationsRun: true,

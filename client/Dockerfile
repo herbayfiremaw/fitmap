@@ -16,7 +16,7 @@ RUN pnpm build
 
 FROM node:20-alpine
 
-RUN corepack enable && corepack prepare pnpm@latest --activate && pnpm add -g serve
+RUN npm install -g serve
 
 WORKDIR /app
 

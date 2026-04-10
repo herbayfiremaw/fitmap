@@ -1,4 +1,4 @@
-import { Body, Controller, Post } from '@nestjs/common';
+import { Body, Controller, HttpCode, Post } from '@nestjs/common';
 import { ApiConflictResponse, ApiOperation, ApiResponse, ApiTags, ApiUnauthorizedResponse } from '@nestjs/swagger';
 import { AuthService } from './auth.service';
 import { SignupDto, LoginDto, AuthResponseDto } from './dto';
@@ -17,8 +17,9 @@ export class AuthController {
   }
 
   @Post('login')
+  @HttpCode(200)
   @ApiOperation({ summary: 'Log in with email and password' })
-  @ApiResponse({ status: 201, description: 'Login successful', type: AuthResponseDto })
+  @ApiResponse({ status: 200, description: 'Login successful', type: AuthResponseDto })
   @ApiUnauthorizedResponse({ description: 'Invalid credentials' })
   login(@Body() dto: LoginDto): Promise<AuthResponseDto> {
     return this.authService.login(dto);

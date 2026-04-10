@@ -42,8 +42,12 @@ export default function VenueDetail() {
   };
 
   const handleDeleteReview = async (reviewId: string) => {
-    await reviewsApi.remove(reviewId);
-    setReviews(reviews.filter((r) => r.id !== reviewId));
+    try {
+      await reviewsApi.remove(reviewId);
+      setReviews(reviews.filter((r) => r.id !== reviewId));
+    } catch {
+      setError('Failed to delete review');
+    }
   };
 
   if (!venue) return <p>Loading...</p>;

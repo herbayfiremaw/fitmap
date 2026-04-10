@@ -3,6 +3,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { citiesApi, type City } from '../api/cities';
 import { trainingTypesApi, type TrainingType } from '../api/training-types';
 import { venuesApi, type Venue } from '../api/venues';
+import fullLogo from '../assets/fitmap-logo-full.svg';
 
 export default function Home() {
   const navigate = useNavigate();
@@ -21,7 +22,7 @@ export default function Home() {
   return (
     <div className="home">
       <section className="hero">
-        <h1>Find Your Perfect Workout Spot</h1>
+        <img src={fullLogo} alt="FitMap" className="hero-logo" />
         <p>Discover gyms, studios, and fitness venues across Bulgaria</p>
         <Link to="/venues" className="btn btn-primary">
           Browse Venues

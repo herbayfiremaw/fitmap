@@ -7,10 +7,17 @@ import {
   ParseUUIDPipe,
   Patch,
   Post,
+  UploadedFile,
   UseGuards,
+  UseInterceptors,
 } from '@nestjs/common';
+import { FileInterceptor } from '@nestjs/platform-express';
+import { diskStorage } from 'multer';
+import { extname } from 'path';
+import { randomUUID } from 'crypto';
 import {
   ApiBearerAuth,
+  ApiConsumes,
   ApiNotFoundResponse,
   ApiOperation,
   ApiTags,
@@ -69,6 +76,52 @@ export class VenuesController {
   @ApiOperation({ summary: 'Delete a venue (owner of venue or admin)' })
   remove(@Param('id', ParseUUIDPipe) id: string, @CurrentUser() user: any) {
     return this.venuesService.remove(id, user.id, user.role);
+  }
+
+  @Post(':id/photos')
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles(UserRole.OWNER, UserRole.ADMIN)
+  @ApiBearerAuth()
+  @ApiOperation({ summary: 'Upload a photo for a venue (owner/admin)' })
+  @ApiConsumes('multipart/form-data')
+  @UseInterceptors(
+    FileInterceptor('file', {
+      storage: diskStorage({
+        destination: 'uploads/venues',
+        filename: (_req: any, file: any, cb: any) => {
+          cb(null, `${randomUUID()}${extname(file.originalname)}`);
+        },
+      }),
+      fileFilter: (_req: any, file: any, cb: any) => {
+        if (!file.mimetype.startsWith('image/')) {
+          cb(new Error('Only image files are allowed'), false);
+        } else {
+          cb(null, true);
+        }
+      },
+      limits: { fileSize: 5 * 1024 * 1024 }, // 5MB
+    }),
+  )
+  uploadPhoto(
+    @Param('id', ParseUUIDPipe) id: string,
+    @UploadedFile() file: { filename: string },
+    @CurrentUser() user: any,
+  ) {
+    const photoUrl = `/uploads/venues/${file.filename}`;
+    return this.venuesService.addPhoto(id, photoUrl, user.id, user.role);
+  }
+
+  @Delete(':id/photos')
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles(UserRole.OWNER, UserRole.ADMIN)
+  @ApiBearerAuth()
+  @ApiOperation({ summary: 'Remove a photo from a venue (owner/admin)' })
+  removePhoto(
+    @Param('id', ParseUUIDPipe) id: string,
+    @Body('photoUrl') photoUrl: string,
+    @CurrentUser() user: any,
+  ) {
+    return this.venuesService.removePhoto(id, photoUrl, user.id, user.role);
   }
 
   @Patch(':id/verify')

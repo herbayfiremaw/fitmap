@@ -1,164 +1,315 @@
-/* Navbar */
+/* ========================
+   NAVBAR
+   ======================== */
 .navbar {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 1rem 2rem;
-  background: #fff;
-  border-bottom: 1px solid #e5e7eb;
+  padding: 1.25rem 2rem;
+  background: #111;
+  color: #fff;
+  position: sticky;
+  top: 0;
+  z-index: 100;
 }
 
 .navbar-brand {
-  font-size: 1.5rem;
-  font-weight: 700;
-  color: #2563eb;
+  display: flex;
+  align-items: center;
+}
+
+.navbar-logo {
+  height: 28px;
+  width: auto;
 }
 
 .navbar-links {
   display: flex;
   align-items: center;
-  gap: 1rem;
+  gap: 1.5rem;
+}
+
+.navbar-links a {
+  color: rgba(255, 255, 255, 0.7);
+  font-size: 0.9rem;
+  font-weight: 500;
+  transition: color 0.2s;
+}
+
+.navbar-links a:hover {
+  color: #fff;
+  opacity: 1;
+}
+
+.navbar-links span {
+  color: rgba(255, 255, 255, 0.5);
+  font-size: 0.85rem;
 }
 
 .navbar-links button {
-  background: none;
-  border: 1px solid #d1d5db;
+  background: transparent;
+  border: 1px solid rgba(255, 255, 255, 0.3);
   border-radius: 6px;
-  padding: 0.4rem 0.8rem;
+  padding: 0.4rem 1rem;
   cursor: pointer;
-  font-size: 0.9rem;
+  font-size: 0.85rem;
+  color: #fff;
+  transition: all 0.2s;
 }
 
-/* Container */
+.navbar-links button:hover {
+  background: #fff;
+  color: #111;
+}
+
+/* Hamburger - hidden on desktop */
+.hamburger {
+  display: none;
+  flex-direction: column;
+  justify-content: center;
+  gap: 5px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 4px;
+  z-index: 110;
+}
+
+.hamburger span {
+  display: block;
+  width: 22px;
+  height: 2px;
+  background: #fff;
+  border-radius: 2px;
+  transition: all 0.3s ease;
+}
+
+.hamburger.open span:nth-child(1) {
+  transform: rotate(45deg) translate(5px, 5px);
+}
+
+.hamburger.open span:nth-child(2) {
+  opacity: 0;
+}
+
+.hamburger.open span:nth-child(3) {
+  transform: rotate(-45deg) translate(5px, -5px);
+}
+
+.navbar-overlay {
+  display: none;
+}
+
+/* ========================
+   CONTAINER
+   ======================== */
 .container {
-  max-width: 1100px;
+  max-width: 1200px;
   margin: 0 auto;
   padding: 2rem;
 }
 
-/* Auth pages */
+/* ========================
+   AUTH PAGES
+   ======================== */
 .auth-page {
-  max-width: 400px;
-  margin: 2rem auto;
+  max-width: 420px;
+  margin: 4rem auto;
+}
+
+.auth-page h1 {
+  font-size: 2rem;
+  font-weight: 800;
+  margin-bottom: 2rem;
+  letter-spacing: -0.5px;
 }
 
 .auth-page form {
   display: flex;
   flex-direction: column;
-  gap: 1rem;
+  gap: 1.25rem;
 }
 
 .auth-page label {
   display: flex;
   flex-direction: column;
-  gap: 0.25rem;
+  gap: 0.4rem;
   font-weight: 500;
-  font-size: 0.9rem;
+  font-size: 0.85rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: #666;
 }
 
 .auth-page input {
-  padding: 0.6rem;
-  border: 1px solid #d1d5db;
-  border-radius: 6px;
+  padding: 0.75rem;
+  border: 2px solid #e5e5e5;
+  border-radius: 8px;
   font-size: 1rem;
+  transition: border-color 0.2s;
+  color: #111;
+  text-transform: none;
+  letter-spacing: normal;
+}
+
+.auth-page input:focus {
+  outline: none;
+  border-color: #111;
 }
 
 .auth-page button[type='submit'] {
-  padding: 0.7rem;
-  background: #2563eb;
+  padding: 0.85rem;
+  background: #111;
   color: #fff;
   border: none;
-  border-radius: 6px;
+  border-radius: 8px;
   font-size: 1rem;
+  font-weight: 600;
   cursor: pointer;
   margin-top: 0.5rem;
+  transition: opacity 0.2s;
 }
 
 .auth-page button[type='submit']:hover {
-  background: #1d4ed8;
+  opacity: 0.85;
+}
+
+.auth-page p {
+  margin-top: 1rem;
+  font-size: 0.9rem;
+  color: #666;
+}
+
+.auth-page p a {
+  font-weight: 600;
+  border-bottom: 1px solid #111;
 }
 
 .error {
-  color: #dc2626;
+  color: #111;
+  background: #fee;
+  border: 1px solid #fcc;
+  padding: 0.6rem 0.8rem;
+  border-radius: 6px;
   font-size: 0.9rem;
-  margin-bottom: 0.5rem;
 }
 
-/* Buttons */
+/* ========================
+   BUTTONS
+   ======================== */
 .btn {
   display: inline-block;
-  padding: 0.6rem 1.2rem;
-  border-radius: 6px;
+  padding: 0.7rem 1.5rem;
+  border-radius: 8px;
   border: none;
-  font-size: 1rem;
+  font-size: 0.95rem;
+  font-weight: 600;
   cursor: pointer;
   text-decoration: none;
+  transition: all 0.2s;
 }
 
 .btn-primary {
-  background: #2563eb;
+  background: #111;
   color: #fff;
 }
 
 .btn-primary:hover {
-  background: #1d4ed8;
+  opacity: 0.85;
   text-decoration: none;
 }
 
 .btn-text {
   background: none;
   border: none;
-  color: #dc2626;
+  color: #999;
   cursor: pointer;
-  font-size: 0.85rem;
+  font-size: 0.8rem;
+  transition: color 0.2s;
 }
 
-/* Hero */
+.btn-text:hover {
+  color: #111;
+}
+
+/* ========================
+   HERO
+   ======================== */
 .hero {
   text-align: center;
-  padding: 4rem 1rem;
-  background: linear-gradient(135deg, #eff6ff, #dbeafe);
-  border-radius: 12px;
-  margin-bottom: 2rem;
+  padding: 5rem 2rem;
+  background: #111;
+  color: #fff;
+  border-radius: 16px;
+  margin-bottom: 3rem;
+}
+
+.hero-logo {
+  height: 100px;
+  width: auto;
+  margin: 0 auto 1.5rem;
+  display: block;
+  filter: invert(1);
 }
 
 .hero h1 {
-  font-size: 2.5rem;
-  margin-bottom: 0.5rem;
-  color: #1e3a5f;
+  font-size: 3rem;
+  font-weight: 800;
+  margin-bottom: 0.75rem;
+  color: #fff;
+  letter-spacing: -1px;
+  line-height: 1.1;
 }
 
 .hero p {
-  font-size: 1.1rem;
-  color: #475569;
-  margin-bottom: 1.5rem;
+  font-size: 1.15rem;
+  color: rgba(255, 255, 255, 0.6);
+  margin-bottom: 2rem;
 }
 
-/* Sections */
+.hero .btn-primary {
+  background: #fff;
+  color: #111;
+  font-weight: 700;
+  padding: 0.85rem 2rem;
+}
+
+.hero .btn-primary:hover {
+  opacity: 0.9;
+}
+
+/* ========================
+   SECTIONS
+   ======================== */
 .section {
-  margin-top: 2.5rem;
+  margin-top: 3rem;
 }
 
 .section h2 {
-  margin-bottom: 1rem;
-  font-size: 1.4rem;
+  margin-bottom: 1.25rem;
+  font-size: 1.6rem;
+  font-weight: 800;
+  letter-spacing: -0.5px;
 }
 
-/* Card grid */
+/* ========================
+   CARD GRID
+   ======================== */
 .card-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-  gap: 1rem;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1.25rem;
 }
 
-/* City grid */
+/* ========================
+   CITY GRID
+   ======================== */
 .city-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  grid-template-columns: repeat(5, 1fr);
   gap: 1rem;
 }
 
-/* City cards */
 .city-card {
   position: relative;
   overflow: hidden;
@@ -166,8 +317,8 @@
   border: none;
   padding: 0;
   cursor: pointer;
-  aspect-ratio: 3 / 2;
-  transition: transform 0.2s;
+  aspect-ratio: 3 / 4;
+  transition: transform 0.3s ease;
 }
 
 .city-card:hover {
@@ -179,31 +330,39 @@
   height: 100%;
   object-fit: cover;
   display: block;
+  filter: grayscale(30%);
+  transition: filter 0.3s;
+}
+
+.city-card:hover .city-img {
+  filter: grayscale(0%);
 }
 
 .city-overlay {
   position: absolute;
   inset: 0;
-  background: linear-gradient(to top, rgba(0, 0, 0, 0.6), transparent);
+  background: linear-gradient(to top, rgba(0, 0, 0, 0.75) 0%, transparent 60%);
   display: flex;
   flex-direction: column;
   justify-content: flex-end;
-  padding: 1rem;
+  padding: 1.25rem;
 }
 
 .city-name {
-  font-size: 1.3rem;
+  font-size: 1.2rem;
   font-weight: 700;
   color: #fff;
-  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.4);
 }
 
 .city-name-bg {
-  font-size: 0.85rem;
-  color: rgba(255, 255, 255, 0.85);
+  font-size: 0.8rem;
+  color: rgba(255, 255, 255, 0.7);
+  margin-top: 0.15rem;
 }
 
-/* Tags */
+/* ========================
+   TAGS
+   ======================== */
 .tag-grid {
   display: flex;
   flex-wrap: wrap;
@@ -211,47 +370,56 @@
 }
 
 .tag {
-  padding: 0.4rem 0.9rem;
-  background: #eff6ff;
-  color: #2563eb;
-  border: 1px solid #bfdbfe;
-  border-radius: 20px;
-  font-size: 0.9rem;
+  padding: 0.5rem 1rem;
+  background: #fff;
+  color: #111;
+  border: 2px solid #e5e5e5;
+  border-radius: 100px;
+  font-size: 0.85rem;
+  font-weight: 500;
   cursor: pointer;
+  transition: all 0.2s;
 }
 
 .tag:hover {
-  background: #dbeafe;
+  background: #111;
+  color: #fff;
+  border-color: #111;
 }
 
 .tag-small {
-  padding: 0.2rem 0.5rem;
-  background: #f3f4f6;
-  color: #374151;
+  padding: 0.2rem 0.6rem;
+  background: #f5f5f5;
+  color: #555;
   border-radius: 4px;
   font-size: 0.75rem;
+  font-weight: 500;
 }
 
-/* Venue cards */
+/* ========================
+   VENUE CARDS
+   ======================== */
 .venue-card {
-  display: block;
-  padding: 1.2rem;
+  display: flex;
+  flex-direction: column;
+  padding: 1.5rem;
   background: #fff;
-  border: 1px solid #e5e7eb;
-  border-radius: 10px;
+  border: 2px solid #f0f0f0;
+  border-radius: 12px;
   text-decoration: none;
   color: inherit;
-  transition: box-shadow 0.2s;
+  transition: all 0.2s;
 }
 
 .venue-card:hover {
-  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
+  border-color: #111;
   text-decoration: none;
 }
 
 .venue-card h3 {
-  margin-bottom: 0.3rem;
-  color: #1a1a1a;
+  margin-bottom: 0.25rem;
+  color: #111;
+  font-weight: 700;
 }
 
 .venue-card-header {
@@ -261,13 +429,14 @@
 }
 
 .venue-city {
-  color: #2563eb;
-  font-size: 0.9rem;
+  color: #888;
+  font-size: 0.85rem;
+  font-weight: 500;
 }
 
 .venue-address {
-  color: #6b7280;
-  font-size: 0.85rem;
+  color: #aaa;
+  font-size: 0.8rem;
   margin-bottom: 0.5rem;
 }
 
@@ -275,53 +444,72 @@
   display: flex;
   flex-wrap: wrap;
   gap: 0.3rem;
-  margin: 0.5rem 0;
+  margin: 0.75rem 0;
 }
 
 .venue-price {
-  font-weight: 700;
-  color: #059669;
+  font-weight: 800;
+  color: #111;
+  font-size: 0.95rem;
 }
 
 .venue-price.large {
-  font-size: 1.3rem;
+  font-size: 1.5rem;
 }
 
 .venue-badges {
   display: flex;
-  gap: 0.4rem;
-  margin-top: 0.5rem;
+  gap: 0.5rem;
+  margin-top: 0.75rem;
 }
 
 .badge {
-  padding: 0.15rem 0.5rem;
+  padding: 0.2rem 0.6rem;
   border-radius: 4px;
-  font-size: 0.75rem;
-  font-weight: 600;
+  font-size: 0.7rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
 }
 
 .badge.verified {
-  background: #d1fae5;
-  color: #065f46;
+  background: #111;
+  color: #fff;
 }
 
 .badge.featured {
-  background: #fef3c7;
-  color: #92400e;
+  background: #f5f5f5;
+  color: #111;
+  border: 1px solid #e5e5e5;
 }
 
-/* Venues page */
-.filters {
+/* ========================
+   VENUES PAGE
+   ======================== */
+.venues-page h1 {
+  font-size: 2.5rem;
+  font-weight: 800;
+  letter-spacing: -1px;
   margin-bottom: 1.5rem;
+}
+
+.filters {
+  margin-bottom: 2rem;
 }
 
 .search-input {
   width: 100%;
-  padding: 0.7rem;
-  border: 1px solid #d1d5db;
-  border-radius: 6px;
+  padding: 0.85rem 1rem;
+  border: 2px solid #e5e5e5;
+  border-radius: 8px;
   font-size: 1rem;
   margin-bottom: 0.75rem;
+  transition: border-color 0.2s;
+}
+
+.search-input:focus {
+  outline: none;
+  border-color: #111;
 }
 
 .filter-row {
@@ -330,109 +518,315 @@
 }
 
 .filter-row select {
-  padding: 0.5rem;
-  border: 1px solid #d1d5db;
-  border-radius: 6px;
+  padding: 0.6rem 0.75rem;
+  border: 2px solid #e5e5e5;
+  border-radius: 8px;
   font-size: 0.9rem;
   background: #fff;
+  cursor: pointer;
+  transition: border-color 0.2s;
+}
+
+.filter-row select:focus {
+  outline: none;
+  border-color: #111;
 }
 
 .no-results {
   text-align: center;
-  color: #6b7280;
-  padding: 3rem;
+  color: #aaa;
+  padding: 4rem;
+  font-size: 1.1rem;
 }
 
-/* Venue detail */
+/* ========================
+   VENUE DETAIL
+   ======================== */
 .venue-detail {
   max-width: 900px;
 }
 
 .back-link {
-  display: inline-block;
-  margin-bottom: 1rem;
-  font-size: 0.9rem;
+  display: inline-flex;
+  align-items: center;
+  margin-bottom: 1.5rem;
+  font-size: 0.85rem;
+  font-weight: 500;
+  color: #888;
+  transition: color 0.2s;
+}
+
+.back-link:hover {
+  color: #111;
+  opacity: 1;
 }
 
 .venue-header {
   display: flex;
   justify-content: space-between;
   align-items: flex-start;
-  margin-bottom: 1rem;
+  margin-bottom: 1.5rem;
 }
 
 .venue-header h1 {
-  font-size: 2rem;
+  font-size: 2.5rem;
+  font-weight: 800;
+  letter-spacing: -1px;
   margin-bottom: 0.25rem;
 }
 
 .venue-meta {
   display: flex;
   align-items: center;
-  gap: 0.75rem;
+  gap: 1rem;
 }
 
 .avg-rating {
   font-size: 1.1rem;
-  font-weight: 600;
-  color: #f59e0b;
+  font-weight: 700;
+  color: #111;
 }
 
 .venue-info-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-  gap: 1.5rem;
-  margin-top: 1.5rem;
+  gap: 2rem;
+  margin-top: 2rem;
+  padding-top: 2rem;
+  border-top: 1px solid #eee;
 }
 
 .info-block h3 {
-  font-size: 1rem;
-  margin-bottom: 0.4rem;
-  color: #374151;
+  font-size: 0.8rem;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  margin-bottom: 0.6rem;
+  color: #999;
+  font-weight: 600;
 }
 
 .info-block p {
-  font-size: 0.9rem;
-  color: #6b7280;
-  line-height: 1.6;
+  font-size: 0.95rem;
+  color: #444;
+  line-height: 1.7;
+}
+
+.info-block a {
+  border-bottom: 1px solid #ddd;
+  color: #111;
+}
+
+.info-block a:hover {
+  opacity: 1;
+  border-color: #111;
 }
 
 .amenities-list {
   display: flex;
   flex-wrap: wrap;
-  gap: 0.3rem;
+  gap: 0.4rem;
 }
 
-/* Schedule table */
+/* ========================
+   GALLERY
+   ======================== */
+.gallery-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.25rem;
+}
+
+.gallery-header h2 {
+  margin-bottom: 0;
+}
+
+.btn-upload {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.5rem 1.2rem;
+  background: #111;
+  color: #fff;
+  border-radius: 8px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: opacity 0.2s;
+}
+
+.btn-upload:hover {
+  opacity: 0.85;
+}
+
+.gallery-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 0.75rem;
+}
+
+.gallery-item {
+  position: relative;
+  aspect-ratio: 4 / 3;
+  border-radius: 10px;
+  overflow: hidden;
+  cursor: pointer;
+}
+
+.gallery-item img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  transition: transform 0.3s;
+}
+
+.gallery-item:hover img {
+  transform: scale(1.05);
+}
+
+.gallery-remove {
+  position: absolute;
+  top: 0.5rem;
+  right: 0.5rem;
+  width: 28px;
+  height: 28px;
+  background: rgba(0, 0, 0, 0.7);
+  color: #fff;
+  border: none;
+  border-radius: 50%;
+  font-size: 1.1rem;
+  line-height: 1;
+  cursor: pointer;
+  opacity: 0;
+  transition: opacity 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.gallery-item:hover .gallery-remove {
+  opacity: 1;
+}
+
+.gallery-empty {
+  color: #aaa;
+  font-size: 0.95rem;
+  padding: 2rem 0;
+}
+
+/* Lightbox */
+.lightbox {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.95);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 200;
+}
+
+.lightbox img {
+  max-width: 90vw;
+  max-height: 85vh;
+  object-fit: contain;
+  border-radius: 4px;
+}
+
+.lightbox-close {
+  position: absolute;
+  top: 1.5rem;
+  right: 1.5rem;
+  background: none;
+  border: none;
+  color: #fff;
+  font-size: 2rem;
+  cursor: pointer;
+  opacity: 0.7;
+  transition: opacity 0.2s;
+}
+
+.lightbox-close:hover {
+  opacity: 1;
+}
+
+.lightbox-prev,
+.lightbox-next {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  background: none;
+  border: none;
+  color: #fff;
+  font-size: 3rem;
+  cursor: pointer;
+  opacity: 0.5;
+  transition: opacity 0.2s;
+  padding: 1rem;
+}
+
+.lightbox-prev:hover,
+.lightbox-next:hover {
+  opacity: 1;
+}
+
+.lightbox-prev {
+  left: 1rem;
+}
+
+.lightbox-next {
+  right: 1rem;
+}
+
+.lightbox-counter {
+  position: absolute;
+  bottom: 1.5rem;
+  left: 50%;
+  transform: translateX(-50%);
+  color: rgba(255, 255, 255, 0.6);
+  font-size: 0.9rem;
+}
+
+/* ========================
+   SCHEDULE TABLE
+   ======================== */
 .schedule-table {
   width: 100%;
   border-collapse: collapse;
-  margin-top: 0.5rem;
+  margin-top: 0.75rem;
 }
 
 .schedule-table th,
 .schedule-table td {
-  padding: 0.6rem 1rem;
+  padding: 0.75rem 1rem;
   text-align: left;
-  border-bottom: 1px solid #e5e7eb;
+  border-bottom: 1px solid #f0f0f0;
   font-size: 0.9rem;
 }
 
 .schedule-table th {
   font-weight: 600;
-  color: #374151;
-  background: #f9fafb;
+  color: #999;
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
 }
 
-/* Reviews */
+.schedule-table tr:hover td {
+  background: #fafafa;
+}
+
+/* ========================
+   REVIEWS
+   ======================== */
 .review-form {
   display: flex;
   flex-direction: column;
   gap: 0.75rem;
-  margin-bottom: 1.5rem;
-  padding: 1rem;
-  background: #f9fafb;
-  border-radius: 8px;
+  margin-bottom: 2rem;
+  padding: 1.5rem;
+  background: #fafafa;
+  border-radius: 12px;
+  border: 1px solid #eee;
 }
 
 .rating-input {
@@ -441,20 +835,32 @@
   gap: 0.5rem;
 }
 
+.rating-input label {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: #666;
+}
+
 .rating-input select {
-  padding: 0.3rem;
-  border: 1px solid #d1d5db;
-  border-radius: 4px;
+  padding: 0.4rem;
+  border: 2px solid #e5e5e5;
+  border-radius: 6px;
 }
 
 .review-form textarea {
-  padding: 0.6rem;
-  border: 1px solid #d1d5db;
-  border-radius: 6px;
+  padding: 0.75rem;
+  border: 2px solid #e5e5e5;
+  border-radius: 8px;
   font-size: 0.95rem;
   font-family: inherit;
   min-height: 80px;
   resize: vertical;
+  transition: border-color 0.2s;
+}
+
+.review-form textarea:focus {
+  outline: none;
+  border-color: #111;
 }
 
 .reviews-list {
@@ -465,26 +871,231 @@
 }
 
 .review-card {
-  padding: 1rem;
+  padding: 1.25rem;
   background: #fff;
-  border: 1px solid #e5e7eb;
-  border-radius: 8px;
+  border: 1px solid #f0f0f0;
+  border-radius: 10px;
 }
 
 .review-header {
   display: flex;
   align-items: center;
   gap: 0.75rem;
-  margin-bottom: 0.4rem;
+  margin-bottom: 0.5rem;
   font-size: 0.9rem;
 }
 
 .review-rating {
-  color: #f59e0b;
-  font-weight: 600;
+  color: #111;
+  font-weight: 700;
 }
 
 .review-date {
-  color: #9ca3af;
+  color: #ccc;
   font-size: 0.8rem;
+}
+
+/* ========================
+   MOBILE RESPONSIVE
+   ======================== */
+
+/* Tablet */
+@media (max-width: 1024px) {
+  .city-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+
+  .card-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+/* Mobile */
+@media (max-width: 768px) {
+  .hamburger {
+    display: flex;
+  }
+
+  .navbar {
+    padding: 1rem;
+  }
+
+  .navbar-logo {
+    height: 24px;
+  }
+
+  .navbar-links {
+    position: fixed;
+    top: 0;
+    right: -100%;
+    width: 70%;
+    max-width: 300px;
+    height: 100vh;
+    background: #111;
+    flex-direction: column;
+    align-items: flex-start;
+    padding: 5rem 2rem 2rem;
+    gap: 1.5rem;
+    transition: right 0.3s ease;
+    z-index: 105;
+  }
+
+  .navbar-links.open {
+    right: 0;
+  }
+
+  .navbar-links a {
+    font-size: 1.1rem;
+    color: rgba(255, 255, 255, 0.7);
+  }
+
+  .navbar-links a.active {
+    color: #fff;
+  }
+
+  .navbar-links span {
+    font-size: 0.9rem;
+  }
+
+  .navbar-links button {
+    width: 100%;
+    text-align: center;
+    padding: 0.6rem 1rem;
+    font-size: 0.95rem;
+  }
+
+  .navbar-overlay {
+    display: block;
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 101;
+  }
+
+  .container {
+    padding: 1.25rem;
+  }
+
+  .hero {
+    padding: 3rem 1.5rem;
+    border-radius: 12px;
+    margin-bottom: 2rem;
+  }
+
+  .hero-logo {
+    height: 45px;
+  }
+
+  .hero h1 {
+    font-size: 2rem;
+  }
+
+  .hero p {
+    font-size: 1rem;
+  }
+
+  .section h2 {
+    font-size: 1.3rem;
+  }
+
+  .city-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 0.75rem;
+  }
+
+  .city-card {
+    aspect-ratio: 1;
+  }
+
+  .card-grid {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+
+  .filter-row {
+    flex-direction: column;
+  }
+
+  .filter-row select {
+    width: 100%;
+  }
+
+  .venues-page h1 {
+    font-size: 1.8rem;
+  }
+
+  .venue-header {
+    flex-direction: column;
+    gap: 1rem;
+  }
+
+  .venue-header h1 {
+    font-size: 1.8rem;
+  }
+
+  .venue-meta {
+    flex-wrap: wrap;
+  }
+
+  .venue-info-grid {
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+  }
+
+  .gallery-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .lightbox-prev,
+  .lightbox-next {
+    font-size: 2rem;
+    padding: 0.5rem;
+  }
+
+  .schedule-table {
+    font-size: 0.85rem;
+  }
+
+  .schedule-table th,
+  .schedule-table td {
+    padding: 0.6rem 0.5rem;
+  }
+
+  .auth-page {
+    margin: 2rem auto;
+    padding: 0 0.5rem;
+  }
+}
+
+/* Small mobile */
+@media (max-width: 480px) {
+  .navbar {
+    padding: 0.85rem;
+  }
+
+  .navbar-links {
+    gap: 0.5rem;
+  }
+
+  .hero {
+    padding: 2.5rem 1rem;
+  }
+
+  .hero h1 {
+    font-size: 1.6rem;
+  }
+
+  .city-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .city-name {
+    font-size: 1rem;
+  }
+
+  .schedule-table th,
+  .schedule-table td {
+    padding: 0.5rem 0.35rem;
+    font-size: 0.8rem;
+  }
 }

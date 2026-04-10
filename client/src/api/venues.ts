@@ -29,4 +29,15 @@ export interface Venue {
 export const venuesApi = {
   getAll: () => api.get<Venue[]>('/venues').then((r) => r.data),
   getOne: (id: string) => api.get<Venue>(`/venues/${id}`).then((r) => r.data),
+  uploadPhoto: (id: string, file: File) => {
+    const form = new FormData();
+    form.append('file', file);
+    return api
+      .post<Venue>(`/venues/${id}/photos`, form, {
+        headers: { 'Content-Type': 'multipart/form-data' },
+      })
+      .then((r) => r.data);
+  },
+  removePhoto: (id: string, photoUrl: string) =>
+    api.delete<Venue>(`/venues/${id}/photos`, { data: { photoUrl } }).then((r) => r.data),
 };

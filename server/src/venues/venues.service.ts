@@ -82,6 +82,34 @@ export class VenuesService {
     await this.venueRepo.remove(venue);
   }
 
+  async addPhoto(
+    id: string,
+    photoUrl: string,
+    userId: string,
+    userRole: UserRole,
+  ): Promise<Venue> {
+    const venue = await this.findOne(id);
+    if (venue.owner_id !== userId && userRole !== UserRole.ADMIN) {
+      throw new ForbiddenException('You can only manage your own venues');
+    }
+    venue.photos = [...venue.photos, photoUrl];
+    return this.venueRepo.save(venue);
+  }
+
+  async removePhoto(
+    id: string,
+    photoUrl: string,
+    userId: string,
+    userRole: UserRole,
+  ): Promise<Venue> {
+    const venue = await this.findOne(id);
+    if (venue.owner_id !== userId && userRole !== UserRole.ADMIN) {
+      throw new ForbiddenException('You can only manage your own venues');
+    }
+    venue.photos = venue.photos.filter((p) => p !== photoUrl);
+    return this.venueRepo.save(venue);
+  }
+
   async verify(id: string, verified: boolean): Promise<Venue> {
     const venue = await this.findOne(id);
     venue.is_verified = verified;

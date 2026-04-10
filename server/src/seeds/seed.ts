@@ -109,7 +109,11 @@ async function seed() {
       website: 'https://fightclub-sofia.bg',
       price_range: PriceRange.MEDIUM,
       amenities: ['Съблекални', 'Душове', 'Паркинг', 'Магазин'],
-      photos: [],
+      photos: [
+        'https://placehold.co/800x600/111/fff?text=Fight+Club+1',
+        'https://placehold.co/800x600/222/fff?text=Fight+Club+2',
+        'https://placehold.co/800x600/333/fff?text=Fight+Club+3',
+      ],
       is_verified: true,
       is_featured: true,
       trainingTypeSlugs: ['mma', 'kickboxing', 'boxing', 'bjj', 'wrestling'],
@@ -128,7 +132,10 @@ async function seed() {
       website: 'https://zenyoga.bg',
       price_range: PriceRange.LOW,
       amenities: ['Съблекални', 'Душове', 'Чай бар'],
-      photos: [],
+      photos: [
+        'https://placehold.co/800x600/111/fff?text=Zen+Yoga+1',
+        'https://placehold.co/800x600/222/fff?text=Zen+Yoga+2',
+      ],
       is_verified: true,
       is_featured: true,
       trainingTypeSlugs: ['yoga', 'pilates'],
@@ -146,7 +153,12 @@ async function seed() {
       email: 'info@irongym-varna.bg',
       price_range: PriceRange.LOW,
       amenities: ['Съблекални', 'Душове', 'Сауна', 'Паркинг'],
-      photos: [],
+      photos: [
+        'https://placehold.co/800x600/111/fff?text=Iron+Gym+1',
+        'https://placehold.co/800x600/222/fff?text=Iron+Gym+2',
+        'https://placehold.co/800x600/333/fff?text=Iron+Gym+3',
+        'https://placehold.co/800x600/444/fff?text=Iron+Gym+4',
+      ],
       is_verified: true,
       is_featured: true,
       trainingTypeSlugs: ['gym-fitness', 'crossfit', 'spinning'],
@@ -164,7 +176,10 @@ async function seed() {
       email: 'info@crossfit-burgas.bg',
       price_range: PriceRange.MEDIUM,
       amenities: ['Съблекални', 'Душове', 'Паркинг'],
-      photos: [],
+      photos: [
+        'https://placehold.co/800x600/111/fff?text=CrossFit+Burgas+1',
+        'https://placehold.co/800x600/222/fff?text=CrossFit+Burgas+2',
+      ],
       is_verified: false,
       is_featured: false,
       trainingTypeSlugs: ['crossfit', 'gym-fitness'],
@@ -183,7 +198,10 @@ async function seed() {
       website: 'https://danceacademy.bg',
       price_range: PriceRange.MEDIUM,
       amenities: ['Съблекални', 'Огледална зала'],
-      photos: [],
+      photos: [
+        'https://placehold.co/800x600/111/fff?text=Dance+Academy+1',
+        'https://placehold.co/800x600/222/fff?text=Dance+Academy+2',
+      ],
       is_verified: true,
       is_featured: true,
       trainingTypeSlugs: ['dance'],
@@ -201,7 +219,11 @@ async function seed() {
       email: 'info@aquasport-sz.bg',
       price_range: PriceRange.HIGH,
       amenities: ['Басейн', 'Съблекални', 'Душове', 'Сауна', 'Паркинг'],
-      photos: [],
+      photos: [
+        'https://placehold.co/800x600/111/fff?text=Aqua+Sport+1',
+        'https://placehold.co/800x600/222/fff?text=Aqua+Sport+2',
+        'https://placehold.co/800x600/333/fff?text=Aqua+Sport+3',
+      ],
       is_verified: true,
       is_featured: true,
       trainingTypeSlugs: ['swimming'],
@@ -220,6 +242,10 @@ async function seed() {
       existing.trainingTypes = trainingTypeSlugs.map((slug) => savedTypes[slug]);
       existing = await venueRepo.save(existing);
       console.log(`Created venue: ${v.name}`);
+    } else if (existing.photos.length === 0 && venueData.photos.length > 0) {
+      existing.photos = venueData.photos;
+      existing = await venueRepo.save(existing);
+      console.log(`Updated photos for venue: ${v.name}`);
     }
     savedVenues[v.name] = existing;
   }
@@ -289,7 +315,7 @@ async function seed() {
     // Iron Gym Varna
     { venue_id: savedVenues['Iron Gym Varna'].id, training_type_id: savedTypes['gym-fitness'].id, trainer_id: savedTrainers['Стефан Маринов'].id, day_of_week: 1, start_time: '08:00', end_time: '09:30' },
     { venue_id: savedVenues['Iron Gym Varna'].id, training_type_id: savedTypes['crossfit'].id, trainer_id: savedTrainers['Стефан Маринов'].id, day_of_week: 3, start_time: '17:00', end_time: '18:30' },
-    { venue_id: savedVenues['Iron Gym Varna'].id, training_type_id: savedTypes['spinning'].id, trainer_id: null, day_of_week: 5, start_time: '08:00', end_time: '09:00' },
+    { venue_id: savedVenues['Iron Gym Varna'].id, training_type_id: savedTypes['spinning'].id, trainer_id: undefined, day_of_week: 5, start_time: '08:00', end_time: '09:00' },
     // Dance Academy
     { venue_id: savedVenues['Dance Academy'].id, training_type_id: savedTypes['dance'].id, trainer_id: savedTrainers['Калина Василева'].id, day_of_week: 2, start_time: '19:00', end_time: '20:30' },
     { venue_id: savedVenues['Dance Academy'].id, training_type_id: savedTypes['dance'].id, trainer_id: savedTrainers['Калина Василева'].id, day_of_week: 4, start_time: '19:00', end_time: '20:30' },

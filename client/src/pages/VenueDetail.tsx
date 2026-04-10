@@ -1,4 +1,4 @@
-import { useEffect, useState, type FormEvent } from 'react';
+import { useEffect, useState, useRef, type FormEvent } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { venuesApi, type Venue } from '../api/venues';
 import { reviewsApi, type Review } from '../api/reviews';
@@ -14,6 +14,11 @@ export default function VenueDetail() {
   const [rating, setRating] = useState(5);
   const [comment, setComment] = useState('');
   const [error, setError] = useState('');
+  const [lightbox, setLightbox] = useState<number | null>(null);
+  const [uploading, setUploading] = useState(false);
+  const fileInput = useRef<HTMLInputElement>(null);
+
+  const isOwner = user && venue && (user.id === venue.owner_id || user.role === 'admin');
 
   useEffect(() => {
     if (!id) return;
@@ -50,6 +55,30 @@ export default function VenueDetail() {
     }
   };
 
+  const handleUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file || !id) return;
+    setUploading(true);
+    try {
+      const updated = await venuesApi.uploadPhoto(id, file);
+      setVenue(updated);
+    } catch {
+      setError('Failed to upload photo');
+    }
+    setUploading(false);
+    if (fileInput.current) fileInput.current.value = '';
+  };
+
+  const handleRemovePhoto = async (photoUrl: string) => {
+    if (!id) return;
+    try {
+      const updated = await venuesApi.removePhoto(id, photoUrl);
+      setVenue(updated);
+    } catch {
+      setError('Failed to remove photo');
+    }
+  };
+
   if (!venue) return <p>Loading...</p>;
 
   return (
@@ -68,6 +97,89 @@ export default function VenueDetail() {
           {avgRating && <span className="avg-rating">{avgRating} / 5</span>}
         </div>
       </div>
+
+      {/* Gallery */}
+      {(venue.photos.length > 0 || isOwner) && (
+        <section className="section">
+          <div className="gallery-header">
+            <h2>Gallery</h2>
+            {isOwner && (
+              <label className="btn btn-upload">
+                {uploading ? 'Uploading...' : 'Add Photo'}
+                <input
+                  ref={fileInput}
+                  type="file"
+                  accept="image/*"
+                  onChange={handleUpload}
+                  hidden
+                  disabled={uploading}
+                />
+              </label>
+            )}
+          </div>
+          {venue.photos.length > 0 ? (
+            <div className="gallery-grid">
+              {venue.photos.map((photo, i) => (
+                <div key={photo} className="gallery-item">
+                  <img
+                    src={photo.startsWith('/') ? `http://localhost:3000${photo}` : photo}
+                    alt={`${venue.name} photo ${i + 1}`}
+                    onClick={() => setLightbox(i)}
+                  />
+                  {isOwner && (
+                    <button
+                      className="gallery-remove"
+                      onClick={() => handleRemovePhoto(photo)}
+                      aria-label="Remove photo"
+                    >
+                      &times;
+                    </button>
+                  )}
+                </div>
+              ))}
+            </div>
+          ) : (
+            <p className="gallery-empty">No photos yet. Add the first one!</p>
+          )}
+        </section>
+      )}
+
+      {/* Lightbox */}
+      {lightbox !== null && (
+        <div className="lightbox" onClick={() => setLightbox(null)}>
+          <button className="lightbox-close">&times;</button>
+          <button
+            className="lightbox-prev"
+            onClick={(e) => {
+              e.stopPropagation();
+              setLightbox((lightbox - 1 + venue.photos.length) % venue.photos.length);
+            }}
+          >
+            &#8249;
+          </button>
+          <img
+            src={
+              venue.photos[lightbox].startsWith('/')
+                ? `http://localhost:3000${venue.photos[lightbox]}`
+                : venue.photos[lightbox]
+            }
+            alt={`${venue.name} photo ${lightbox + 1}`}
+            onClick={(e) => e.stopPropagation()}
+          />
+          <button
+            className="lightbox-next"
+            onClick={(e) => {
+              e.stopPropagation();
+              setLightbox((lightbox + 1) % venue.photos.length);
+            }}
+          >
+            &#8250;
+          </button>
+          <span className="lightbox-counter">
+            {lightbox + 1} / {venue.photos.length}
+          </span>
+        </div>
+      )}
 
       <div className="venue-tags">
         {venue.trainingTypes?.map((tt) => (

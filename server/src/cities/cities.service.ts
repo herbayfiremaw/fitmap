@@ -13,7 +13,7 @@ export class CitiesService {
   ) {}
 
   findAll(): Promise<City[]> {
-    return this.cityRepo.find({ order: { name_en: 'ASC' } });
+    return this.cityRepo.find({ order: { id: 'ASC' } });
   }
 
   async findOne(id: number): Promise<City> {

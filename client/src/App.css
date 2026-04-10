@@ -83,3 +83,408 @@
   font-size: 0.9rem;
   margin-bottom: 0.5rem;
 }
+
+/* Buttons */
+.btn {
+  display: inline-block;
+  padding: 0.6rem 1.2rem;
+  border-radius: 6px;
+  border: none;
+  font-size: 1rem;
+  cursor: pointer;
+  text-decoration: none;
+}
+
+.btn-primary {
+  background: #2563eb;
+  color: #fff;
+}
+
+.btn-primary:hover {
+  background: #1d4ed8;
+  text-decoration: none;
+}
+
+.btn-text {
+  background: none;
+  border: none;
+  color: #dc2626;
+  cursor: pointer;
+  font-size: 0.85rem;
+}
+
+/* Hero */
+.hero {
+  text-align: center;
+  padding: 4rem 1rem;
+  background: linear-gradient(135deg, #eff6ff, #dbeafe);
+  border-radius: 12px;
+  margin-bottom: 2rem;
+}
+
+.hero h1 {
+  font-size: 2.5rem;
+  margin-bottom: 0.5rem;
+  color: #1e3a5f;
+}
+
+.hero p {
+  font-size: 1.1rem;
+  color: #475569;
+  margin-bottom: 1.5rem;
+}
+
+/* Sections */
+.section {
+  margin-top: 2.5rem;
+}
+
+.section h2 {
+  margin-bottom: 1rem;
+  font-size: 1.4rem;
+}
+
+/* Card grid */
+.card-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 1rem;
+}
+
+/* City grid */
+.city-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 1rem;
+}
+
+/* City cards */
+.city-card {
+  position: relative;
+  overflow: hidden;
+  border-radius: 12px;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  aspect-ratio: 3 / 2;
+  transition: transform 0.2s;
+}
+
+.city-card:hover {
+  transform: scale(1.03);
+}
+
+.city-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.city-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to top, rgba(0, 0, 0, 0.6), transparent);
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  padding: 1rem;
+}
+
+.city-name {
+  font-size: 1.3rem;
+  font-weight: 700;
+  color: #fff;
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.4);
+}
+
+.city-name-bg {
+  font-size: 0.85rem;
+  color: rgba(255, 255, 255, 0.85);
+}
+
+/* Tags */
+.tag-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.tag {
+  padding: 0.4rem 0.9rem;
+  background: #eff6ff;
+  color: #2563eb;
+  border: 1px solid #bfdbfe;
+  border-radius: 20px;
+  font-size: 0.9rem;
+  cursor: pointer;
+}
+
+.tag:hover {
+  background: #dbeafe;
+}
+
+.tag-small {
+  padding: 0.2rem 0.5rem;
+  background: #f3f4f6;
+  color: #374151;
+  border-radius: 4px;
+  font-size: 0.75rem;
+}
+
+/* Venue cards */
+.venue-card {
+  display: block;
+  padding: 1.2rem;
+  background: #fff;
+  border: 1px solid #e5e7eb;
+  border-radius: 10px;
+  text-decoration: none;
+  color: inherit;
+  transition: box-shadow 0.2s;
+}
+
+.venue-card:hover {
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
+  text-decoration: none;
+}
+
+.venue-card h3 {
+  margin-bottom: 0.3rem;
+  color: #1a1a1a;
+}
+
+.venue-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+}
+
+.venue-city {
+  color: #2563eb;
+  font-size: 0.9rem;
+}
+
+.venue-address {
+  color: #6b7280;
+  font-size: 0.85rem;
+  margin-bottom: 0.5rem;
+}
+
+.venue-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.3rem;
+  margin: 0.5rem 0;
+}
+
+.venue-price {
+  font-weight: 700;
+  color: #059669;
+}
+
+.venue-price.large {
+  font-size: 1.3rem;
+}
+
+.venue-badges {
+  display: flex;
+  gap: 0.4rem;
+  margin-top: 0.5rem;
+}
+
+.badge {
+  padding: 0.15rem 0.5rem;
+  border-radius: 4px;
+  font-size: 0.75rem;
+  font-weight: 600;
+}
+
+.badge.verified {
+  background: #d1fae5;
+  color: #065f46;
+}
+
+.badge.featured {
+  background: #fef3c7;
+  color: #92400e;
+}
+
+/* Venues page */
+.filters {
+  margin-bottom: 1.5rem;
+}
+
+.search-input {
+  width: 100%;
+  padding: 0.7rem;
+  border: 1px solid #d1d5db;
+  border-radius: 6px;
+  font-size: 1rem;
+  margin-bottom: 0.75rem;
+}
+
+.filter-row {
+  display: flex;
+  gap: 0.75rem;
+}
+
+.filter-row select {
+  padding: 0.5rem;
+  border: 1px solid #d1d5db;
+  border-radius: 6px;
+  font-size: 0.9rem;
+  background: #fff;
+}
+
+.no-results {
+  text-align: center;
+  color: #6b7280;
+  padding: 3rem;
+}
+
+/* Venue detail */
+.venue-detail {
+  max-width: 900px;
+}
+
+.back-link {
+  display: inline-block;
+  margin-bottom: 1rem;
+  font-size: 0.9rem;
+}
+
+.venue-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 1rem;
+}
+
+.venue-header h1 {
+  font-size: 2rem;
+  margin-bottom: 0.25rem;
+}
+
+.venue-meta {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.avg-rating {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: #f59e0b;
+}
+
+.venue-info-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 1.5rem;
+  margin-top: 1.5rem;
+}
+
+.info-block h3 {
+  font-size: 1rem;
+  margin-bottom: 0.4rem;
+  color: #374151;
+}
+
+.info-block p {
+  font-size: 0.9rem;
+  color: #6b7280;
+  line-height: 1.6;
+}
+
+.amenities-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.3rem;
+}
+
+/* Schedule table */
+.schedule-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 0.5rem;
+}
+
+.schedule-table th,
+.schedule-table td {
+  padding: 0.6rem 1rem;
+  text-align: left;
+  border-bottom: 1px solid #e5e7eb;
+  font-size: 0.9rem;
+}
+
+.schedule-table th {
+  font-weight: 600;
+  color: #374151;
+  background: #f9fafb;
+}
+
+/* Reviews */
+.review-form {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  margin-bottom: 1.5rem;
+  padding: 1rem;
+  background: #f9fafb;
+  border-radius: 8px;
+}
+
+.rating-input {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.rating-input select {
+  padding: 0.3rem;
+  border: 1px solid #d1d5db;
+  border-radius: 4px;
+}
+
+.review-form textarea {
+  padding: 0.6rem;
+  border: 1px solid #d1d5db;
+  border-radius: 6px;
+  font-size: 0.95rem;
+  font-family: inherit;
+  min-height: 80px;
+  resize: vertical;
+}
+
+.reviews-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  margin-top: 1rem;
+}
+
+.review-card {
+  padding: 1rem;
+  background: #fff;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+}
+
+.review-header {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-bottom: 0.4rem;
+  font-size: 0.9rem;
+}
+
+.review-rating {
+  color: #f59e0b;
+  font-weight: 600;
+}
+
+.review-date {
+  color: #9ca3af;
+  font-size: 0.8rem;
+}

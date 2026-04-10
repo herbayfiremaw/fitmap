@@ -5,6 +5,7 @@ import Home from './pages/Home';
 import Login from './pages/Login';
 import Signup from './pages/Signup';
 import Venues from './pages/Venues';
+import VenueDetail from './pages/VenueDetail';
 import './App.css';
 
 function App() {
@@ -17,6 +18,7 @@ function App() {
             <Route path="/login" element={<Login />} />
             <Route path="/signup" element={<Signup />} />
             <Route path="/venues" element={<Venues />} />
+            <Route path="/venues/:id" element={<VenueDetail />} />
           </Route>
         </Routes>
       </BrowserRouter>

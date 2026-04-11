@@ -9,7 +9,7 @@ RUN pnpm install --frozen-lockfile
 
 COPY . .
 
-RUN mkdir -p uploads/venues
+RUN mkdir -p uploads/venues uploads/avatars
 
 EXPOSE 3000
 

@@ -1,7 +1,9 @@
-import { useEffect, useState, type FormEvent } from 'react';
+import { useEffect, useState, useRef, type FormEvent } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { authApi, type Profile, type UpdateProfileData } from '../api/auth';
 import { useAuth } from '../context/AuthContext';
+
+const apiUrl = import.meta.env.VITE_API_URL ?? 'http://localhost:3000';
 
 export default function ProfilePage() {
   const { user, logout, refreshUser } = useAuth();
@@ -13,6 +15,7 @@ export default function ProfilePage() {
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
+  const fileInput = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
     if (!user) {
@@ -55,6 +58,21 @@ export default function ProfilePage() {
     }
   };
 
+  const handleAvatarUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    try {
+      const response = await authApi.uploadAvatar(file);
+      refreshUser(response);
+      const updated = await authApi.getProfile();
+      setProfile(updated);
+      setSuccess('Avatar updated');
+    } catch {
+      setError('Failed to upload avatar');
+    }
+    if (fileInput.current) fileInput.current.value = '';
+  };
+
   if (!profile) return <p>Loading...</p>;
 
   return (
@@ -63,9 +81,27 @@ export default function ProfilePage() {
 
       <div className="profile-card">
         <div className="profile-info">
-          <div className="profile-avatar">
-            {profile.name.charAt(0).toUpperCase()}
-          </div>
+          <label className="profile-avatar-wrapper">
+            {profile.avatar_url ? (
+              <img
+                src={profile.avatar_url.startsWith('/') ? `${apiUrl}${profile.avatar_url}` : profile.avatar_url}
+                alt={profile.name}
+                className="profile-avatar-img"
+              />
+            ) : (
+              <div className="profile-avatar">
+                {profile.name.charAt(0).toUpperCase()}
+              </div>
+            )}
+            <div className="profile-avatar-overlay">Change</div>
+            <input
+              ref={fileInput}
+              type="file"
+              accept="image/*"
+              onChange={handleAvatarUpload}
+              hidden
+            />
+          </label>
           <div>
             <h2>{profile.name}</h2>
             <p className="profile-email">{profile.email}</p>

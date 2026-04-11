@@ -60,4 +60,12 @@ export const authApi = {
 
   updateProfile: (data: UpdateProfileData) =>
     api.patch<AuthResponse>('/auth/profile', data).then((r) => r.data),
+
+  uploadAvatar: (file: File) => {
+    const form = new FormData();
+    form.append('file', file);
+    return api.post<AuthResponse>('/auth/profile/avatar', form, {
+      headers: { 'Content-Type': 'multipart/form-data' },
+    }).then((r) => r.data);
+  },
 };

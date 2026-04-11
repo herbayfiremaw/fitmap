@@ -99,6 +99,14 @@ export class AuthService {
     return this.buildResponse(user);
   }
 
+  async updateAvatar(userId: string, avatarUrl: string) {
+    const user = await this.userRepo.findOneBy({ id: userId });
+    if (!user) throw new UnauthorizedException('User not found');
+    user.avatar_url = avatarUrl;
+    await this.userRepo.save(user);
+    return this.buildResponse(user);
+  }
+
   private buildResponse(user: User): AuthResponseDto {
     const payload = { sub: user.id, email: user.email, role: user.role };
     return {

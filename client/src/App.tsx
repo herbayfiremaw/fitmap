@@ -7,6 +7,7 @@ import Signup from './pages/Signup';
 import Venues from './pages/Venues';
 import VenueDetail from './pages/VenueDetail';
 import Profile from './pages/Profile';
+import Admin from './pages/Admin';
 import './App.css';
 
 function App() {
@@ -21,6 +22,7 @@ function App() {
             <Route path="/venues" element={<Venues />} />
             <Route path="/venues/:id" element={<VenueDetail />} />
             <Route path="/profile" element={<Profile />} />
+            <Route path="/admin" element={<Admin />} />
           </Route>
         </Routes>
       </BrowserRouter>

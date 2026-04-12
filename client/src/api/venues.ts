@@ -40,4 +40,10 @@ export const venuesApi = {
   },
   removePhoto: (id: string, photoUrl: string) =>
     api.delete<Venue>(`/venues/${id}/photos`, { data: { photoUrl } }).then((r) => r.data),
+  verify: (id: string, verified: boolean) =>
+    api.patch<Venue>(`/venues/${id}/verify`, { verified }).then((r) => r.data),
+  feature: (id: string, featured: boolean) =>
+    api.patch<Venue>(`/venues/${id}/feature`, { featured }).then((r) => r.data),
+  remove: (id: string) =>
+    api.delete(`/venues/${id}`).then((r) => r.data),
 };

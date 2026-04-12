@@ -37,6 +37,7 @@ export default function Navbar() {
         {navLink('/venues', 'Venues')}
         {user ? (
           <>
+            {user.role === 'admin' && navLink('/admin', 'Admin')}
             {navLink('/profile', user.name)}
             <button onClick={() => { logout(); close(); }}>Log Out</button>
           </>

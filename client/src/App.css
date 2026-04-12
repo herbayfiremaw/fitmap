@@ -1098,6 +1098,152 @@
 }
 
 /* ========================
+   ADMIN DASHBOARD
+   ======================== */
+
+.admin-page h1 {
+  font-size: 2rem;
+  margin-bottom: 1.5rem;
+}
+
+.admin-tabs {
+  display: flex;
+  gap: 0.5rem;
+  margin-bottom: 2rem;
+  border-bottom: 2px solid #f0f0f0;
+  padding-bottom: 0;
+}
+
+.admin-tab {
+  padding: 0.6rem 1.25rem;
+  background: none;
+  border: none;
+  border-bottom: 2px solid transparent;
+  margin-bottom: -2px;
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: #888;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.admin-tab:hover {
+  color: #111;
+}
+
+.admin-tab.active {
+  color: #111;
+  border-bottom-color: #111;
+}
+
+.admin-stats {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1rem;
+}
+
+.stat-card {
+  background: #fff;
+  border: 2px solid #f0f0f0;
+  border-radius: 12px;
+  padding: 1.5rem;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+
+.stat-number {
+  font-size: 2.5rem;
+  font-weight: 800;
+  color: #111;
+}
+
+.stat-label {
+  font-size: 0.85rem;
+  color: #888;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.admin-table-wrapper {
+  overflow-x: auto;
+}
+
+.admin-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.9rem;
+}
+
+.admin-table th {
+  text-align: left;
+  padding: 0.75rem;
+  border-bottom: 2px solid #111;
+  font-weight: 700;
+  font-size: 0.8rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: #555;
+}
+
+.admin-table td {
+  padding: 0.75rem;
+  border-bottom: 1px solid #f0f0f0;
+  vertical-align: middle;
+}
+
+.admin-table tr:hover td {
+  background: #fafafa;
+}
+
+.admin-table select {
+  padding: 0.35rem 0.5rem;
+  border: 2px solid #e5e5e5;
+  border-radius: 6px;
+  font-size: 0.85rem;
+  background: #fff;
+}
+
+.admin-table a {
+  color: #111;
+  font-weight: 600;
+}
+
+.btn-sm {
+  padding: 0.3rem 0.7rem;
+  font-size: 0.8rem;
+  border-radius: 6px;
+  border: 1px solid #e5e5e5;
+  background: #fff;
+  cursor: pointer;
+  font-weight: 600;
+  transition: all 0.2s;
+}
+
+.btn-sm.btn-active {
+  background: #111;
+  color: #fff;
+  border-color: #111;
+}
+
+.btn-sm.btn-outline:hover {
+  border-color: #111;
+}
+
+.btn-sm.btn-danger {
+  color: #dc3545;
+  border-color: #dc3545;
+  background: #fff;
+}
+
+.btn-sm.btn-danger:hover {
+  background: #dc3545;
+  color: #fff;
+}
+
+/* ========================
    MOBILE RESPONSIVE
    ======================== */
 
@@ -1176,6 +1322,19 @@
 
   .container {
     padding: 1.25rem;
+  }
+
+  .admin-stats {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .admin-table {
+    font-size: 0.8rem;
+  }
+
+  .admin-table th,
+  .admin-table td {
+    padding: 0.5rem;
   }
 
   .hero {

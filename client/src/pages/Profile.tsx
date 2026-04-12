@@ -2,6 +2,7 @@ import { useEffect, useState, useRef, type FormEvent } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { authApi, type Profile, type UpdateProfileData } from '../api/auth';
 import { useAuth } from '../context/AuthContext';
+import { StarsDisplay } from '../components/Stars';
 
 const apiUrl = import.meta.env.VITE_API_URL ?? 'http://localhost:3000';
 
@@ -186,7 +187,7 @@ export default function ProfilePage() {
                   ) : (
                     <strong>Deleted venue</strong>
                   )}
-                  <span className="review-rating">{r.rating}/5</span>
+                  <StarsDisplay rating={r.rating} size={14} />
                   <span className="review-date">
                     {new Date(r.created_at).toLocaleDateString()}
                   </span>

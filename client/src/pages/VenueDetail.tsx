@@ -6,6 +6,7 @@ import { schedulesApi, dayName, type Schedule } from '../api/schedules';
 import { useAuth } from '../context/AuthContext';
 import { useLang } from '../context/LangContext';
 import { VenueMap } from '../components/Map';
+import { StarsDisplay, StarsInput } from '../components/Stars';
 
 export default function VenueDetail() {
   const { id } = useParams<{ id: string }>();
@@ -101,7 +102,12 @@ export default function VenueDetail() {
           {venue.is_verified && (
             <span className="badge verified">{lang === 'bg' ? 'Верифицирана' : 'Verified'}</span>
           )}
-          {avgRating && <span className="avg-rating">{avgRating} / 5</span>}
+          {avgRating && (
+            <span className="avg-rating-stars">
+              <StarsDisplay rating={Number(avgRating)} />
+              <span className="avg-number">{avgRating}</span>
+            </span>
+          )}
         </div>
       </div>
 
@@ -260,11 +266,7 @@ export default function VenueDetail() {
             {error && <p className="error">{error}</p>}
             <div className="rating-input">
               <label>{lang === 'bg' ? 'Оценка' : 'Rating'}</label>
-              <select value={rating} onChange={(e) => setRating(Number(e.target.value))}>
-                {[5, 4, 3, 2, 1].map((n) => (
-                  <option key={n} value={n}>{n}</option>
-                ))}
-              </select>
+              <StarsInput value={rating} onChange={setRating} />
             </div>
             <textarea
               placeholder={lang === 'bg' ? 'Напишете отзив...' : 'Write your review...'}
@@ -290,7 +292,7 @@ export default function VenueDetail() {
             <div key={r.id} className="review-card">
               <div className="review-header">
                 <strong>{r.user?.name ?? 'User'}</strong>
-                <span className="review-rating">{r.rating}/5</span>
+                <StarsDisplay rating={r.rating} size={14} />
                 <span className="review-date">
                   {new Date(r.created_at).toLocaleDateString()}
                 </span>

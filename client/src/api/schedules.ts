@@ -12,9 +12,11 @@ export interface Schedule {
   trainer: { id: string; name: string } | null;
 }
 
-const DAYS = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+const DAYS_EN = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+const DAYS_BG = ['Неделя', 'Понеделник', 'Вторник', 'Сряда', 'Четвъртък', 'Петък', 'Събота'];
 
-export const dayName = (day: number) => DAYS[day];
+export const dayName = (day: number, lang: 'en' | 'bg' = 'en') =>
+  lang === 'bg' ? DAYS_BG[day] : DAYS_EN[day];
 
 export interface CreateScheduleData {
   venue_id: string;
@@ -31,5 +33,5 @@ export const schedulesApi = {
   create: (data: CreateScheduleData) =>
     api.post<Schedule>('/schedules', data).then((r) => r.data),
   remove: (id: string) =>
-    api.delete(`/schedules/${id}`).then((r) => r.data),
+    api.delete(`/schedules/${id}`).then(() => undefined),
 };

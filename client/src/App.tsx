@@ -10,6 +10,8 @@ import VenueDetail from './pages/VenueDetail';
 import Profile from './pages/Profile';
 import Admin from './pages/Admin';
 import OwnerPanel from './pages/OwnerPanel';
+import Trainers from './pages/Trainers';
+import TrainerDetail from './pages/TrainerDetail';
 import './App.css';
 
 function App() {
@@ -24,6 +26,8 @@ function App() {
             <Route path="/signup" element={<Signup />} />
             <Route path="/venues" element={<Venues />} />
             <Route path="/venues/:id" element={<VenueDetail />} />
+            <Route path="/trainers" element={<Trainers />} />
+            <Route path="/trainers/:id" element={<TrainerDetail />} />
             <Route path="/profile" element={<Profile />} />
             <Route path="/admin" element={<Admin />} />
             <Route path="/my-venues" element={<OwnerPanel />} />

@@ -18,6 +18,13 @@ export class TrainersService {
     private readonly venueRepo: Repository<Venue>,
   ) {}
 
+  findAll(): Promise<Trainer[]> {
+    return this.trainerRepo.find({
+      relations: ['venue'],
+      order: { name: 'ASC' },
+    });
+  }
+
   findByVenue(venueId: string): Promise<Trainer[]> {
     return this.trainerRepo.find({
       where: { venue_id: venueId },
@@ -28,7 +35,7 @@ export class TrainersService {
   async findOne(id: string): Promise<Trainer> {
     const trainer = await this.trainerRepo.findOne({
       where: { id },
-      relations: ['venue'],
+      relations: ['venue', 'schedules', 'schedules.trainingType', 'schedules.venue'],
     });
     if (!trainer) throw new NotFoundException('Trainer not found');
     return trainer;

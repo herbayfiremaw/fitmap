@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
+import { useLang } from '../context/LangContext';
 import { adminApi, type DashboardStats, type AdminUser } from '../api/admin';
 import { venuesApi, type Venue } from '../api/venues';
 
@@ -8,6 +9,7 @@ type Tab = 'overview' | 'users' | 'venues';
 
 export default function Admin() {
   const { user } = useAuth();
+  const { lang, t } = useLang();
   const navigate = useNavigate();
   const [tab, setTab] = useState<Tab>('overview');
   const [stats, setStats] = useState<DashboardStats | null>(null);
@@ -25,47 +27,57 @@ export default function Admin() {
   }, [user, navigate]);
 
   const handleRoleChange = async (id: string, role: string) => {
-    await adminApi.changeRole(id, role);
-    setUsers((prev) => prev.map((u) => (u.id === id ? { ...u, role: role as AdminUser['role'] } : u)));
+    try {
+      await adminApi.changeRole(id, role);
+      setUsers((prev) => prev.map((u) => (u.id === id ? { ...u, role: role as AdminUser['role'] } : u)));
+    } catch { /* silently fail — role reverts visually on next load */ }
   };
 
   const handleDeleteUser = async (id: string) => {
-    if (!confirm('Are you sure you want to delete this user?')) return;
-    await adminApi.deleteUser(id);
-    setUsers((prev) => prev.filter((u) => u.id !== id));
+    if (!confirm(lang === 'bg' ? 'Сигурни ли сте, че искате да изтриете този потребител?' : 'Are you sure you want to delete this user?')) return;
+    try {
+      await adminApi.deleteUser(id);
+      setUsers((prev) => prev.filter((u) => u.id !== id));
+    } catch { /* silently fail */ }
   };
 
   const handleVerify = async (id: string, verified: boolean) => {
-    await venuesApi.verify(id, verified);
-    setVenues((prev) => prev.map((v) => (v.id === id ? { ...v, is_verified: verified } : v)));
+    try {
+      await venuesApi.verify(id, verified);
+      setVenues((prev) => prev.map((v) => (v.id === id ? { ...v, is_verified: verified } : v)));
+    } catch { /* silently fail */ }
   };
 
   const handleFeature = async (id: string, featured: boolean) => {
-    await venuesApi.feature(id, featured);
-    setVenues((prev) => prev.map((v) => (v.id === id ? { ...v, is_featured: featured } : v)));
+    try {
+      await venuesApi.feature(id, featured);
+      setVenues((prev) => prev.map((v) => (v.id === id ? { ...v, is_featured: featured } : v)));
+    } catch { /* silently fail */ }
   };
 
   const handleDeleteVenue = async (id: string) => {
-    if (!confirm('Are you sure you want to delete this venue?')) return;
-    await venuesApi.remove(id);
-    setVenues((prev) => prev.filter((v) => v.id !== id));
+    if (!confirm(lang === 'bg' ? 'Сигурни ли сте, че искате да изтриете тази зала?' : 'Are you sure you want to delete this venue?')) return;
+    try {
+      await venuesApi.remove(id);
+      setVenues((prev) => prev.filter((v) => v.id !== id));
+    } catch { /* silently fail */ }
   };
 
   if (!user || user.role !== 'admin') return null;
 
   return (
     <div className="admin-page">
-      <h1>Admin Dashboard</h1>
+      <h1>{lang === 'bg' ? 'Админ Панел' : 'Admin Dashboard'}</h1>
 
       <div className="admin-tabs">
         <button className={`admin-tab ${tab === 'overview' ? 'active' : ''}`} onClick={() => setTab('overview')}>
-          Overview
+          {lang === 'bg' ? 'Обзор' : 'Overview'}
         </button>
         <button className={`admin-tab ${tab === 'users' ? 'active' : ''}`} onClick={() => setTab('users')}>
-          Users ({users.length})
+          {lang === 'bg' ? 'Потребители' : 'Users'} ({users.length})
         </button>
         <button className={`admin-tab ${tab === 'venues' ? 'active' : ''}`} onClick={() => setTab('venues')}>
-          Venues ({venues.length})
+          {lang === 'bg' ? 'Зали' : 'Venues'} ({venues.length})
         </button>
       </div>
 
@@ -73,19 +85,19 @@ export default function Admin() {
         <div className="admin-stats">
           <div className="stat-card">
             <span className="stat-number">{stats.totalUsers}</span>
-            <span className="stat-label">Users</span>
+            <span className="stat-label">{lang === 'bg' ? 'Потребители' : 'Users'}</span>
           </div>
           <div className="stat-card">
             <span className="stat-number">{stats.totalVenues}</span>
-            <span className="stat-label">Venues</span>
+            <span className="stat-label">{lang === 'bg' ? 'Зали' : 'Venues'}</span>
           </div>
           <div className="stat-card">
             <span className="stat-number">{stats.verifiedVenues}</span>
-            <span className="stat-label">Verified</span>
+            <span className="stat-label">{lang === 'bg' ? 'Верифицирани' : 'Verified'}</span>
           </div>
           <div className="stat-card">
             <span className="stat-number">{stats.totalReviews}</span>
-            <span className="stat-label">Reviews</span>
+            <span className="stat-label">{lang === 'bg' ? 'Отзиви' : 'Reviews'}</span>
           </div>
         </div>
       )}
@@ -95,11 +107,11 @@ export default function Admin() {
           <table className="admin-table">
             <thead>
               <tr>
-                <th>Name</th>
-                <th>Email</th>
-                <th>Role</th>
-                <th>Joined</th>
-                <th>Actions</th>
+                <th>{lang === 'bg' ? 'Име' : 'Name'}</th>
+                <th>{lang === 'bg' ? 'Имейл' : 'Email'}</th>
+                <th>{lang === 'bg' ? 'Роля' : 'Role'}</th>
+                <th>{lang === 'bg' ? 'Регистриран' : 'Joined'}</th>
+                <th>{lang === 'bg' ? 'Действия' : 'Actions'}</th>
               </tr>
             </thead>
             <tbody>
@@ -125,7 +137,7 @@ export default function Admin() {
                       onClick={() => handleDeleteUser(u.id)}
                       disabled={u.id === user.id}
                     >
-                      Delete
+                      {lang === 'bg' ? 'Изтрий' : 'Delete'}
                     </button>
                   </td>
                 </tr>

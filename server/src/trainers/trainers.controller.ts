@@ -29,10 +29,12 @@ export class TrainersController {
   constructor(private readonly trainersService: TrainersService) {}
 
   @Get()
-  @ApiOperation({ summary: 'Get trainers by venue' })
-  @ApiQuery({ name: 'venue_id', type: String })
-  findByVenue(@Query('venue_id') venueId: string) {
-    return this.trainersService.findByVenue(venueId);
+  @ApiOperation({ summary: 'Get trainers (optionally filter by venue)' })
+  @ApiQuery({ name: 'venue_id', type: String, required: false })
+  find(@Query('venue_id') venueId?: string) {
+    return venueId
+      ? this.trainersService.findByVenue(venueId)
+      : this.trainersService.findAll();
   }
 
   @Get(':id')

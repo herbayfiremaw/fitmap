@@ -36,6 +36,7 @@ export default function Navbar() {
 
       <div className={`navbar-links ${open ? 'open' : ''}`}>
         {navLink('/venues', lang === 'bg' ? 'Зали' : 'Venues')}
+        {navLink('/trainers', lang === 'bg' ? 'Треньори' : 'Trainers')}
         {user ? (
           <>
             {(user.role === 'owner' || user.role === 'admin') && navLink('/my-venues', lang === 'bg' ? 'Моите Зали' : 'My Venues')}

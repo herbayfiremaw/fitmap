@@ -233,6 +233,71 @@
 }
 
 /* ========================
+   ANIMATIONS
+   ======================== */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes scaleIn {
+  from {
+    opacity: 0;
+    transform: scale(0.85);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes slideInLeft {
+  from {
+    opacity: 0;
+    transform: translateX(-40px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+/* Scroll reveal */
+.reveal {
+  opacity: 0;
+  transform: translateY(30px);
+  transition: opacity 0.6s ease, transform 0.6s ease;
+}
+
+.reveal.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* Staggered children animation */
+.stagger-children .reveal-child {
+  opacity: 0;
+  transform: translateY(20px);
+  transition: opacity 0.4s ease, transform 0.4s ease;
+}
+
+.stagger-children.visible .reveal-child {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* ========================
    HERO
    ======================== */
 .hero {
@@ -242,6 +307,7 @@
   color: #fff;
   border-radius: 16px;
   margin-bottom: 3rem;
+  overflow: hidden;
 }
 
 .hero-logo {
@@ -250,6 +316,7 @@
   margin: 0 auto 1.5rem;
   display: block;
   filter: invert(1);
+  animation: scaleIn 0.8s ease-out both;
 }
 
 .hero h1 {
@@ -259,12 +326,14 @@
   color: #fff;
   letter-spacing: -1px;
   line-height: 1.1;
+  animation: fadeInUp 0.7s ease-out 0.2s both;
 }
 
 .hero p {
   font-size: 1.15rem;
   color: rgba(255, 255, 255, 0.6);
   margin-bottom: 2rem;
+  animation: fadeInUp 0.7s ease-out 0.4s both;
 }
 
 .hero .btn-primary {
@@ -272,10 +341,13 @@
   color: #111;
   font-weight: 700;
   padding: 0.85rem 2rem;
+  animation: fadeInUp 0.7s ease-out 0.6s both;
+  transition: transform 0.2s, opacity 0.2s;
 }
 
 .hero .btn-primary:hover {
   opacity: 0.9;
+  transform: translateY(-2px);
 }
 
 /* ========================
@@ -385,6 +457,7 @@
   background: #111;
   color: #fff;
   border-color: #111;
+  transform: translateY(-2px);
 }
 
 .tag-small {
@@ -414,6 +487,8 @@
 .venue-card:hover {
   border-color: #111;
   text-decoration: none;
+  transform: translateY(-4px);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
 }
 
 .venue-card h3 {

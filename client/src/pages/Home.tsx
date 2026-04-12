@@ -4,6 +4,7 @@ import { citiesApi, type City } from '../api/cities';
 import { trainingTypesApi, type TrainingType } from '../api/training-types';
 import { venuesApi, type Venue } from '../api/venues';
 import type { MapMarker } from '../components/Map';
+import { useRevealAll } from '../hooks/useReveal';
 import fullLogo from '../assets/fitmap-logo-full.svg';
 
 const LazyVenuesMap = lazy(() =>
@@ -21,6 +22,8 @@ export default function Home() {
     trainingTypesApi.getAll().then(setTrainingTypes);
     venuesApi.getAll().then(setVenues);
   }, []);
+
+  useRevealAll();
 
   const featuredVenues = useMemo(
     () => venues.filter((v) => v.is_featured).slice(0, 6),
@@ -51,13 +54,13 @@ export default function Home() {
         </Link>
       </section>
 
-      <section className="section">
+      <section className="section reveal stagger-children">
         <h2>Cities</h2>
         <div className="city-grid">
           {cities.map((city) => (
             <button
               key={city.id}
-              className="city-card"
+              className="city-card reveal-child"
               onClick={() => navigate(`/venues?city=${city.id}`)}
             >
               <img
@@ -75,7 +78,7 @@ export default function Home() {
       </section>
 
       {markers.length > 0 && (
-        <section className="section">
+        <section className="section reveal">
           <h2>Explore Venues on the Map</h2>
           <div className="home-map-wrapper">
             <Suspense fallback={<div style={{ height: 500 }}>Loading map...</div>}>
@@ -88,13 +91,13 @@ export default function Home() {
         </section>
       )}
 
-      <section className="section">
+      <section className="section reveal stagger-children">
         <h2>Training Types</h2>
         <div className="tag-grid">
           {trainingTypes.map((tt) => (
             <button
               key={tt.id}
-              className="tag"
+              className="tag reveal-child"
               onClick={() => navigate(`/venues?type=${tt.id}`)}
             >
               {tt.name_en}
@@ -104,14 +107,14 @@ export default function Home() {
       </section>
 
       {featuredVenues.length > 0 && (
-        <section className="section">
+        <section className="section reveal stagger-children">
           <h2>Featured Venues</h2>
           <div className="card-grid">
             {featuredVenues.map((venue) => (
               <Link
                 key={venue.id}
                 to={`/venues/${venue.id}`}
-                className="venue-card"
+                className="venue-card reveal-child"
               >
                 <h3>{venue.name}</h3>
                 <p className="venue-city">{venue.city?.name_en}</p>

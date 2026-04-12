@@ -4,11 +4,13 @@ import { venuesApi, type Venue } from '../api/venues';
 import { reviewsApi, type Review } from '../api/reviews';
 import { schedulesApi, dayName, type Schedule } from '../api/schedules';
 import { useAuth } from '../context/AuthContext';
+import { useLang } from '../context/LangContext';
 import { VenueMap } from '../components/Map';
 
 export default function VenueDetail() {
   const { id } = useParams<{ id: string }>();
   const { user } = useAuth();
+  const { lang, t, td } = useLang();
   const [venue, setVenue] = useState<Venue | null>(null);
   const [reviews, setReviews] = useState<Review[]>([]);
   const [schedules, setSchedules] = useState<Schedule[]>([]);
@@ -43,7 +45,7 @@ export default function VenueDetail() {
       setComment('');
       setRating(5);
     } catch {
-      setError('Failed to submit review');
+      setError(lang === 'bg' ? 'Грешка при изпращане' : 'Failed to submit review');
     }
   };
 
@@ -52,7 +54,7 @@ export default function VenueDetail() {
       await reviewsApi.remove(reviewId);
       setReviews(reviews.filter((r) => r.id !== reviewId));
     } catch {
-      setError('Failed to delete review');
+      setError(lang === 'bg' ? 'Грешка при изтриване' : 'Failed to delete review');
     }
   };
 
@@ -64,7 +66,7 @@ export default function VenueDetail() {
       const updated = await venuesApi.uploadPhoto(id, file);
       setVenue(updated);
     } catch {
-      setError('Failed to upload photo');
+      setError(lang === 'bg' ? 'Грешка при качване' : 'Failed to upload photo');
     }
     setUploading(false);
     if (fileInput.current) fileInput.current.value = '';
@@ -76,25 +78,29 @@ export default function VenueDetail() {
       const updated = await venuesApi.removePhoto(id, photoUrl);
       setVenue(updated);
     } catch {
-      setError('Failed to remove photo');
+      setError(lang === 'bg' ? 'Грешка при премахване' : 'Failed to remove photo');
     }
   };
 
-  if (!venue) return <p>Loading...</p>;
+  if (!venue) return <p>{lang === 'bg' ? 'Зареждане...' : 'Loading...'}</p>;
 
   return (
     <div className="venue-detail">
-      <Link to="/venues" className="back-link">Back to Venues</Link>
+      <Link to="/venues" className="back-link">
+        {lang === 'bg' ? 'Назад към Залите' : 'Back to Venues'}
+      </Link>
 
       <div className="venue-header">
         <div>
           <h1>{venue.name}</h1>
-          <p className="venue-city">{venue.city?.name_en}</p>
+          <p className="venue-city">{venue.city ? t(venue.city) : ''}</p>
           <p className="venue-address">{venue.address}</p>
         </div>
         <div className="venue-meta">
           <span className="venue-price large">{venue.price_range}</span>
-          {venue.is_verified && <span className="badge verified">Verified</span>}
+          {venue.is_verified && (
+            <span className="badge verified">{lang === 'bg' ? 'Верифицирана' : 'Verified'}</span>
+          )}
           {avgRating && <span className="avg-rating">{avgRating} / 5</span>}
         </div>
       </div>
@@ -103,10 +109,12 @@ export default function VenueDetail() {
       {(venue.photos.length > 0 || isOwner) && (
         <section className="section">
           <div className="gallery-header">
-            <h2>Gallery</h2>
+            <h2>{lang === 'bg' ? 'Галерия' : 'Gallery'}</h2>
             {isOwner && (
               <label className="btn btn-upload">
-                {uploading ? 'Uploading...' : 'Add Photo'}
+                {uploading
+                  ? (lang === 'bg' ? 'Качване...' : 'Uploading...')
+                  : (lang === 'bg' ? 'Добави Снимка' : 'Add Photo')}
                 <input
                   ref={fileInput}
                   type="file"
@@ -140,7 +148,9 @@ export default function VenueDetail() {
               ))}
             </div>
           ) : (
-            <p className="gallery-empty">No photos yet. Add the first one!</p>
+            <p className="gallery-empty">
+              {lang === 'bg' ? 'Все още няма снимки.' : 'No photos yet. Add the first one!'}
+            </p>
           )}
         </section>
       )}
@@ -184,24 +194,24 @@ export default function VenueDetail() {
 
       <div className="venue-tags">
         {venue.trainingTypes?.map((tt) => (
-          <span key={tt.id} className="tag">{tt.name_en}</span>
+          <span key={tt.id} className="tag">{t(tt)}</span>
         ))}
       </div>
 
       <div className="venue-info-grid">
         <div className="info-block">
-          <h3>Description</h3>
-          <p>{venue.description_en}</p>
+          <h3>{lang === 'bg' ? 'Описание' : 'Description'}</h3>
+          <p>{td(venue)}</p>
         </div>
         <div className="info-block">
-          <h3>Contact</h3>
+          <h3>{lang === 'bg' ? 'Контакт' : 'Contact'}</h3>
           <p>{venue.phone}</p>
           <p>{venue.email}</p>
           {venue.website && <p><a href={venue.website} target="_blank" rel="noreferrer">{venue.website}</a></p>}
         </div>
         {venue.amenities?.length > 0 && (
           <div className="info-block">
-            <h3>Amenities</h3>
+            <h3>{lang === 'bg' ? 'Удобства' : 'Amenities'}</h3>
             <div className="amenities-list">
               {venue.amenities.map((a) => (
                 <span key={a} className="tag-small">{a}</span>
@@ -212,20 +222,20 @@ export default function VenueDetail() {
       </div>
 
       <section className="section">
-        <h2>Location</h2>
+        <h2>{lang === 'bg' ? 'Местоположение' : 'Location'}</h2>
         <VenueMap lat={Number(venue.latitude)} lng={Number(venue.longitude)} name={venue.name} />
       </section>
 
       {schedules.length > 0 && (
         <section className="section">
-          <h2>Schedule</h2>
+          <h2>{lang === 'bg' ? 'Програма' : 'Schedule'}</h2>
           <table className="schedule-table">
             <thead>
               <tr>
-                <th>Day</th>
-                <th>Time</th>
-                <th>Training</th>
-                <th>Trainer</th>
+                <th>{lang === 'bg' ? 'Ден' : 'Day'}</th>
+                <th>{lang === 'bg' ? 'Час' : 'Time'}</th>
+                <th>{lang === 'bg' ? 'Тренировка' : 'Training'}</th>
+                <th>{lang === 'bg' ? 'Треньор' : 'Trainer'}</th>
               </tr>
             </thead>
             <tbody>
@@ -233,7 +243,7 @@ export default function VenueDetail() {
                 <tr key={s.id}>
                   <td>{dayName(s.day_of_week)}</td>
                   <td>{s.start_time} - {s.end_time}</td>
-                  <td>{s.trainingType?.name_en}</td>
+                  <td>{s.trainingType ? t(s.trainingType) : ''}</td>
                   <td>{s.trainer?.name ?? '-'}</td>
                 </tr>
               ))}
@@ -243,13 +253,13 @@ export default function VenueDetail() {
       )}
 
       <section className="section">
-        <h2>Reviews ({reviews.length})</h2>
+        <h2>{lang === 'bg' ? 'Отзиви' : 'Reviews'} ({reviews.length})</h2>
 
         {user && (
           <form className="review-form" onSubmit={handleReview}>
             {error && <p className="error">{error}</p>}
             <div className="rating-input">
-              <label>Rating</label>
+              <label>{lang === 'bg' ? 'Оценка' : 'Rating'}</label>
               <select value={rating} onChange={(e) => setRating(Number(e.target.value))}>
                 {[5, 4, 3, 2, 1].map((n) => (
                   <option key={n} value={n}>{n}</option>
@@ -257,16 +267,23 @@ export default function VenueDetail() {
               </select>
             </div>
             <textarea
-              placeholder="Write your review..."
+              placeholder={lang === 'bg' ? 'Напишете отзив...' : 'Write your review...'}
               value={comment}
               onChange={(e) => setComment(e.target.value)}
               required
             />
-            <button type="submit" className="btn btn-primary">Submit Review</button>
+            <button type="submit" className="btn btn-primary">
+              {lang === 'bg' ? 'Изпрати' : 'Submit Review'}
+            </button>
           </form>
         )}
 
-        {!user && <p><Link to="/login">Log in</Link> to leave a review</p>}
+        {!user && (
+          <p>
+            <Link to="/login">{lang === 'bg' ? 'Влезте' : 'Log in'}</Link>
+            {lang === 'bg' ? ' за да оставите отзив' : ' to leave a review'}
+          </p>
+        )}
 
         <div className="reviews-list">
           {reviews.map((r) => (
@@ -279,7 +296,7 @@ export default function VenueDetail() {
                 </span>
                 {user && (user.id === r.user_id || user.role === 'admin') && (
                   <button className="btn-text" onClick={() => handleDeleteReview(r.id)}>
-                    Delete
+                    {lang === 'bg' ? 'Изтрий' : 'Delete'}
                   </button>
                 )}
               </div>

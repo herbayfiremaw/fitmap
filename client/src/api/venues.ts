@@ -26,9 +26,31 @@ export interface Venue {
   trainingTypes: TrainingType[];
 }
 
+export interface CreateVenueData {
+  name: string;
+  description_bg: string;
+  description_en: string;
+  address: string;
+  city_id: number;
+  latitude: number;
+  longitude: number;
+  phone: string;
+  email: string;
+  website?: string;
+  price_range: '$' | '$$' | '$$$';
+  amenities?: string[];
+  training_type_ids?: number[];
+}
+
+export type UpdateVenueData = Partial<CreateVenueData>;
+
 export const venuesApi = {
   getAll: () => api.get<Venue[]>('/venues').then((r) => r.data),
   getOne: (id: string) => api.get<Venue>(`/venues/${id}`).then((r) => r.data),
+  create: (data: CreateVenueData) =>
+    api.post<Venue>('/venues', data).then((r) => r.data),
+  update: (id: string, data: UpdateVenueData) =>
+    api.patch<Venue>(`/venues/${id}`, data).then((r) => r.data),
   uploadPhoto: (id: string, file: File) => {
     const form = new FormData();
     form.append('file', file);

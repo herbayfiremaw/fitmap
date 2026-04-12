@@ -5,6 +5,7 @@ import { trainingTypesApi, type TrainingType } from '../api/training-types';
 import { venuesApi, type Venue } from '../api/venues';
 import type { MapMarker } from '../components/Map';
 import { useRevealAll } from '../hooks/useReveal';
+import { useLang } from '../context/LangContext';
 import fullLogo from '../assets/fitmap-logo-full.svg';
 
 const LazyVenuesMap = lazy(() =>
@@ -13,6 +14,7 @@ const LazyVenuesMap = lazy(() =>
 
 export default function Home() {
   const navigate = useNavigate();
+  const { lang, t } = useLang();
   const [cities, setCities] = useState<City[]>([]);
   const [trainingTypes, setTrainingTypes] = useState<TrainingType[]>([]);
   const [venues, setVenues] = useState<Venue[]>([]);
@@ -39,23 +41,27 @@ export default function Home() {
           lat: Number(v.latitude),
           lng: Number(v.longitude),
           name: v.name,
-          label: v.city?.name_en,
+          label: v.city ? t(v.city) : undefined,
         })),
-    [venues],
+    [venues, t],
   );
 
   return (
     <div className="home">
       <section className="hero">
         <img src={fullLogo} alt="FitMap" className="hero-logo" />
-        <p>Discover gyms, studios, and fitness venues across Bulgaria</p>
+        <p>
+          {lang === 'bg'
+            ? 'Открийте фитнес зали и студиа в цяла България'
+            : 'Discover gyms, studios, and fitness venues across Bulgaria'}
+        </p>
         <Link to="/venues" className="btn btn-primary">
-          Browse Venues
+          {lang === 'bg' ? 'Разгледай Залите' : 'Browse Venues'}
         </Link>
       </section>
 
       <section className="section reveal stagger-children">
-        <h2>Cities</h2>
+        <h2>{lang === 'bg' ? 'Градове' : 'Cities'}</h2>
         <div className="city-grid">
           {cities.map((city) => (
             <button
@@ -65,12 +71,12 @@ export default function Home() {
             >
               <img
                 src={`/cities/${city.slug}.jpg`}
-                alt={city.name_en}
+                alt={t(city)}
                 className="city-img"
               />
               <div className="city-overlay">
-                <span className="city-name">{city.name_en}</span>
-                <span className="city-name-bg">{city.name_bg}</span>
+                <span className="city-name">{t(city)}</span>
+                {lang === 'en' && <span className="city-name-bg">{city.name_bg}</span>}
               </div>
             </button>
           ))}
@@ -79,9 +85,9 @@ export default function Home() {
 
       {markers.length > 0 && (
         <section className="section reveal">
-          <h2>Explore Venues on the Map</h2>
+          <h2>{lang === 'bg' ? 'Зали на Картата' : 'Explore Venues on the Map'}</h2>
           <div className="home-map-wrapper">
-            <Suspense fallback={<div style={{ height: 500 }}>Loading map...</div>}>
+            <Suspense fallback={<div style={{ height: 500 }}>{lang === 'bg' ? 'Зареждане...' : 'Loading map...'}</div>}>
               <LazyVenuesMap
                 markers={markers}
                 onMarkerClick={(id) => navigate(`/venues/${id}`)}
@@ -92,7 +98,7 @@ export default function Home() {
       )}
 
       <section className="section reveal stagger-children">
-        <h2>Training Types</h2>
+        <h2>{lang === 'bg' ? 'Видове Тренировки' : 'Training Types'}</h2>
         <div className="tag-grid">
           {trainingTypes.map((tt) => (
             <button
@@ -100,7 +106,7 @@ export default function Home() {
               className="tag reveal-child"
               onClick={() => navigate(`/venues?type=${tt.id}`)}
             >
-              {tt.name_en}
+              {t(tt)}
             </button>
           ))}
         </div>
@@ -108,7 +114,7 @@ export default function Home() {
 
       {featuredVenues.length > 0 && (
         <section className="section reveal stagger-children">
-          <h2>Featured Venues</h2>
+          <h2>{lang === 'bg' ? 'Препоръчани Зали' : 'Featured Venues'}</h2>
           <div className="card-grid">
             {featuredVenues.map((venue) => (
               <Link
@@ -117,12 +123,12 @@ export default function Home() {
                 className="venue-card reveal-child"
               >
                 <h3>{venue.name}</h3>
-                <p className="venue-city">{venue.city?.name_en}</p>
+                <p className="venue-city">{venue.city ? t(venue.city) : ''}</p>
                 <p className="venue-address">{venue.address}</p>
                 <div className="venue-tags">
                   {venue.trainingTypes?.map((tt) => (
                     <span key={tt.id} className="tag-small">
-                      {tt.name_en}
+                      {t(tt)}
                     </span>
                   ))}
                 </div>

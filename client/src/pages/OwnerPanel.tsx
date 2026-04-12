@@ -1,0 +1,423 @@
+import { useEffect, useState, type FormEvent } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { useAuth } from '../context/AuthContext';
+import { venuesApi, type Venue, type CreateVenueData, type UpdateVenueData } from '../api/venues';
+import { citiesApi, type City } from '../api/cities';
+import { trainingTypesApi, type TrainingType } from '../api/training-types';
+import { schedulesApi, type Schedule, type CreateScheduleData, dayName } from '../api/schedules';
+
+const apiUrl = import.meta.env.VITE_API_URL ?? 'http://localhost:3000';
+
+type View = 'list' | 'edit' | 'create' | 'schedules' | 'photos';
+
+export default function OwnerPanel() {
+  const { user } = useAuth();
+  const navigate = useNavigate();
+  const [view, setView] = useState<View>('list');
+  const [venues, setVenues] = useState<Venue[]>([]);
+  const [cities, setCities] = useState<City[]>([]);
+  const [trainingTypes, setTrainingTypes] = useState<TrainingType[]>([]);
+  const [selectedVenue, setSelectedVenue] = useState<Venue | null>(null);
+  const [schedules, setSchedules] = useState<Schedule[]>([]);
+  const [error, setError] = useState('');
+  const [success, setSuccess] = useState('');
+
+  // Form state
+  const [form, setForm] = useState<CreateVenueData>({
+    name: '', description_bg: '', description_en: '', address: '',
+    city_id: 0, latitude: 0, longitude: 0, phone: '', email: '',
+    website: '', price_range: '$$', amenities: [], training_type_ids: [],
+  });
+
+  // Schedule form
+  const [schedForm, setSchedForm] = useState<CreateScheduleData>({
+    venue_id: '', training_type_id: 0, day_of_week: 1,
+    start_time: '09:00', end_time: '10:00',
+  });
+
+  useEffect(() => {
+    if (!user || (user.role !== 'owner' && user.role !== 'admin')) {
+      navigate('/');
+      return;
+    }
+    loadData();
+  }, [user, navigate]);
+
+  const loadData = async () => {
+    const [allVenues, allCities, allTT] = await Promise.all([
+      venuesApi.getAll(),
+      citiesApi.getAll(),
+      trainingTypesApi.getAll(),
+    ]);
+    setVenues(allVenues.filter((v) => v.owner_id === user!.id || user!.role === 'admin'));
+    setCities(allCities);
+    setTrainingTypes(allTT);
+  };
+
+  const clearMessages = () => { setError(''); setSuccess(''); };
+
+  const openEdit = (venue: Venue) => {
+    setSelectedVenue(venue);
+    setForm({
+      name: venue.name,
+      description_bg: venue.description_bg,
+      description_en: venue.description_en,
+      address: venue.address,
+      city_id: venue.city_id,
+      latitude: Number(venue.latitude),
+      longitude: Number(venue.longitude),
+      phone: venue.phone,
+      email: venue.email,
+      website: venue.website || '',
+      price_range: venue.price_range,
+      amenities: venue.amenities,
+      training_type_ids: venue.trainingTypes?.map((t) => t.id) || [],
+    });
+    clearMessages();
+    setView('edit');
+  };
+
+  const openCreate = () => {
+    setSelectedVenue(null);
+    setForm({
+      name: '', description_bg: '', description_en: '', address: '',
+      city_id: cities[0]?.id || 0, latitude: 42.6977, longitude: 23.3219,
+      phone: '', email: '', website: '', price_range: '$$',
+      amenities: [], training_type_ids: [],
+    });
+    clearMessages();
+    setView('create');
+  };
+
+  const openSchedules = async (venue: Venue) => {
+    setSelectedVenue(venue);
+    const s = await schedulesApi.getByVenue(venue.id);
+    setSchedules(s);
+    setSchedForm({
+      venue_id: venue.id, training_type_id: trainingTypes[0]?.id || 0,
+      day_of_week: 1, start_time: '09:00', end_time: '10:00',
+    });
+    clearMessages();
+    setView('schedules');
+  };
+
+  const openPhotos = (venue: Venue) => {
+    setSelectedVenue(venue);
+    clearMessages();
+    setView('photos');
+  };
+
+  const handleSubmit = async (e: FormEvent) => {
+    e.preventDefault();
+    clearMessages();
+    try {
+      if (view === 'create') {
+        await venuesApi.create(form);
+        setSuccess('Venue created');
+      } else if (selectedVenue) {
+        const updates: UpdateVenueData = {};
+        for (const [key, val] of Object.entries(form)) {
+          if (JSON.stringify(val) !== JSON.stringify((selectedVenue as any)[key])) {
+            (updates as any)[key] = val;
+          }
+        }
+        await venuesApi.update(selectedVenue.id, updates);
+        setSuccess('Venue updated');
+      }
+      await loadData();
+      setView('list');
+    } catch {
+      setError('Failed to save venue');
+    }
+  };
+
+  const handleDelete = async (id: string) => {
+    if (!confirm('Delete this venue?')) return;
+    await venuesApi.remove(id);
+    await loadData();
+  };
+
+  const handlePhotoUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file || !selectedVenue) return;
+    try {
+      const updated = await venuesApi.uploadPhoto(selectedVenue.id, file);
+      setSelectedVenue(updated);
+      setVenues((prev) => prev.map((v) => v.id === updated.id ? updated : v));
+      setSuccess('Photo uploaded');
+    } catch {
+      setError('Failed to upload photo');
+    }
+    e.target.value = '';
+  };
+
+  const handlePhotoRemove = async (photoUrl: string) => {
+    if (!selectedVenue) return;
+    const updated = await venuesApi.removePhoto(selectedVenue.id, photoUrl);
+    setSelectedVenue(updated);
+    setVenues((prev) => prev.map((v) => v.id === updated.id ? updated : v));
+  };
+
+  const handleAddSchedule = async (e: FormEvent) => {
+    e.preventDefault();
+    clearMessages();
+    try {
+      await schedulesApi.create(schedForm);
+      const s = await schedulesApi.getByVenue(selectedVenue!.id);
+      setSchedules(s);
+      setSuccess('Schedule added');
+    } catch {
+      setError('Failed to add schedule');
+    }
+  };
+
+  const handleDeleteSchedule = async (id: string) => {
+    await schedulesApi.remove(id);
+    setSchedules((prev) => prev.filter((s) => s.id !== id));
+  };
+
+  const toggleTT = (id: number) => {
+    setForm((prev) => ({
+      ...prev,
+      training_type_ids: prev.training_type_ids?.includes(id)
+        ? prev.training_type_ids.filter((t) => t !== id)
+        : [...(prev.training_type_ids || []), id],
+    }));
+  };
+
+  if (!user || (user.role !== 'owner' && user.role !== 'admin')) return null;
+
+  return (
+    <div className="owner-page">
+      <div className="owner-header">
+        <h1>My Venues</h1>
+        {view === 'list' && (
+          <button className="btn btn-primary" onClick={openCreate}>+ Add Venue</button>
+        )}
+        {view !== 'list' && (
+          <button className="btn btn-outline" onClick={() => { clearMessages(); setView('list'); }}>
+            Back to List
+          </button>
+        )}
+      </div>
+
+      {error && <p className="error">{error}</p>}
+      {success && <p className="success">{success}</p>}
+
+      {/* VENUE LIST */}
+      {view === 'list' && (
+        <div className="owner-venues">
+          {venues.length === 0 ? (
+            <p className="no-results">You don't have any venues yet. Create one!</p>
+          ) : (
+            venues.map((v) => (
+              <div key={v.id} className="owner-venue-card">
+                <div className="owner-venue-info">
+                  <h3>{v.name}</h3>
+                  <p>{v.city?.name_en} — {v.address}</p>
+                  <div className="owner-venue-badges">
+                    {v.is_verified && <span className="badge">Verified</span>}
+                    {v.is_featured && <span className="badge">Featured</span>}
+                    <span className="badge badge-outline">{v.price_range}</span>
+                  </div>
+                </div>
+                <div className="owner-venue-actions">
+                  <button className="btn-sm btn-outline" onClick={() => openEdit(v)}>Edit</button>
+                  <button className="btn-sm btn-outline" onClick={() => openSchedules(v)}>Schedules</button>
+                  <button className="btn-sm btn-outline" onClick={() => openPhotos(v)}>Photos</button>
+                  <button className="btn-sm btn-danger" onClick={() => handleDelete(v.id)}>Delete</button>
+                </div>
+              </div>
+            ))
+          )}
+        </div>
+      )}
+
+      {/* CREATE / EDIT FORM */}
+      {(view === 'create' || view === 'edit') && (
+        <form className="owner-form" onSubmit={handleSubmit}>
+          <h2>{view === 'create' ? 'New Venue' : `Edit: ${selectedVenue?.name}`}</h2>
+
+          <div className="form-row">
+            <div className="form-group">
+              <label>Name</label>
+              <input value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} required />
+            </div>
+            <div className="form-group">
+              <label>City</label>
+              <select value={form.city_id} onChange={(e) => setForm({ ...form, city_id: Number(e.target.value) })}>
+                {cities.map((c) => <option key={c.id} value={c.id}>{c.name_en}</option>)}
+              </select>
+            </div>
+          </div>
+
+          <div className="form-group">
+            <label>Address</label>
+            <input value={form.address} onChange={(e) => setForm({ ...form, address: e.target.value })} required />
+          </div>
+
+          <div className="form-row">
+            <div className="form-group">
+              <label>Description (BG)</label>
+              <textarea rows={3} value={form.description_bg} onChange={(e) => setForm({ ...form, description_bg: e.target.value })} required />
+            </div>
+            <div className="form-group">
+              <label>Description (EN)</label>
+              <textarea rows={3} value={form.description_en} onChange={(e) => setForm({ ...form, description_en: e.target.value })} required />
+            </div>
+          </div>
+
+          <div className="form-row">
+            <div className="form-group">
+              <label>Latitude</label>
+              <input type="number" step="any" value={form.latitude} onChange={(e) => setForm({ ...form, latitude: Number(e.target.value) })} required />
+            </div>
+            <div className="form-group">
+              <label>Longitude</label>
+              <input type="number" step="any" value={form.longitude} onChange={(e) => setForm({ ...form, longitude: Number(e.target.value) })} required />
+            </div>
+          </div>
+
+          <div className="form-row">
+            <div className="form-group">
+              <label>Phone</label>
+              <input value={form.phone} onChange={(e) => setForm({ ...form, phone: e.target.value })} required />
+            </div>
+            <div className="form-group">
+              <label>Email</label>
+              <input type="email" value={form.email} onChange={(e) => setForm({ ...form, email: e.target.value })} required />
+            </div>
+          </div>
+
+          <div className="form-row">
+            <div className="form-group">
+              <label>Website</label>
+              <input value={form.website} onChange={(e) => setForm({ ...form, website: e.target.value })} />
+            </div>
+            <div className="form-group">
+              <label>Price Range</label>
+              <select value={form.price_range} onChange={(e) => setForm({ ...form, price_range: e.target.value as '$' | '$$' | '$$$' })}>
+                <option value="$">$ — Budget</option>
+                <option value="$$">$$ — Mid-range</option>
+                <option value="$$$">$$$ — Premium</option>
+              </select>
+            </div>
+          </div>
+
+          <div className="form-group">
+            <label>Training Types</label>
+            <div className="tt-picker">
+              {trainingTypes.map((tt) => (
+                <button
+                  key={tt.id}
+                  type="button"
+                  className={`tag ${form.training_type_ids?.includes(tt.id) ? 'tag-selected' : ''}`}
+                  onClick={() => toggleTT(tt.id)}
+                >
+                  {tt.name_en}
+                </button>
+              ))}
+            </div>
+          </div>
+
+          <div className="form-group">
+            <label>Amenities (comma-separated)</label>
+            <input
+              value={form.amenities?.join(', ')}
+              onChange={(e) => setForm({ ...form, amenities: e.target.value.split(',').map((s) => s.trim()).filter(Boolean) })}
+              placeholder="parking, showers, lockers, sauna"
+            />
+          </div>
+
+          <button type="submit" className="btn btn-primary">
+            {view === 'create' ? 'Create Venue' : 'Save Changes'}
+          </button>
+        </form>
+      )}
+
+      {/* SCHEDULES */}
+      {view === 'schedules' && selectedVenue && (
+        <div className="owner-schedules">
+          <h2>Schedules: {selectedVenue.name}</h2>
+
+          {schedules.length > 0 && (
+            <table className="admin-table">
+              <thead>
+                <tr>
+                  <th>Day</th>
+                  <th>Time</th>
+                  <th>Type</th>
+                  <th>Trainer</th>
+                  <th></th>
+                </tr>
+              </thead>
+              <tbody>
+                {schedules.map((s) => (
+                  <tr key={s.id}>
+                    <td>{dayName(s.day_of_week)}</td>
+                    <td>{s.start_time} — {s.end_time}</td>
+                    <td>{s.trainingType?.name_en}</td>
+                    <td>{s.trainer?.name || '—'}</td>
+                    <td>
+                      <button className="btn-sm btn-danger" onClick={() => handleDeleteSchedule(s.id)}>Remove</button>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          )}
+
+          <form className="owner-sched-form" onSubmit={handleAddSchedule}>
+            <h3>Add Schedule</h3>
+            <div className="form-row">
+              <div className="form-group">
+                <label>Day</label>
+                <select value={schedForm.day_of_week} onChange={(e) => setSchedForm({ ...schedForm, day_of_week: Number(e.target.value) })}>
+                  {[1,2,3,4,5,6,0].map((d) => <option key={d} value={d}>{dayName(d)}</option>)}
+                </select>
+              </div>
+              <div className="form-group">
+                <label>Training Type</label>
+                <select value={schedForm.training_type_id} onChange={(e) => setSchedForm({ ...schedForm, training_type_id: Number(e.target.value) })}>
+                  {trainingTypes.map((tt) => <option key={tt.id} value={tt.id}>{tt.name_en}</option>)}
+                </select>
+              </div>
+            </div>
+            <div className="form-row">
+              <div className="form-group">
+                <label>Start Time</label>
+                <input type="time" value={schedForm.start_time} onChange={(e) => setSchedForm({ ...schedForm, start_time: e.target.value })} required />
+              </div>
+              <div className="form-group">
+                <label>End Time</label>
+                <input type="time" value={schedForm.end_time} onChange={(e) => setSchedForm({ ...schedForm, end_time: e.target.value })} required />
+              </div>
+            </div>
+            <button type="submit" className="btn btn-primary">Add Schedule</button>
+          </form>
+        </div>
+      )}
+
+      {/* PHOTOS */}
+      {view === 'photos' && selectedVenue && (
+        <div className="owner-photos">
+          <h2>Photos: {selectedVenue.name}</h2>
+
+          <div className="gallery-grid">
+            {selectedVenue.photos.map((photo, i) => (
+              <div key={i} className="owner-photo">
+                <img src={photo.startsWith('/') ? `${apiUrl}${photo}` : photo} alt={`Photo ${i + 1}`} />
+                <button className="owner-photo-remove" onClick={() => handlePhotoRemove(photo)}>X</button>
+              </div>
+            ))}
+          </div>
+
+          <label className="btn btn-outline owner-upload-btn">
+            Upload Photo
+            <input type="file" accept="image/*" onChange={handlePhotoUpload} hidden />
+          </label>
+        </div>
+      )}
+    </div>
+  );
+}

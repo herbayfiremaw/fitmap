@@ -1,5 +1,6 @@
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import { AuthProvider } from './context/AuthContext';
+import { LangProvider } from './context/LangContext';
 import Layout from './components/Layout';
 import Home from './pages/Home';
 import Login from './pages/Login';
@@ -8,10 +9,12 @@ import Venues from './pages/Venues';
 import VenueDetail from './pages/VenueDetail';
 import Profile from './pages/Profile';
 import Admin from './pages/Admin';
+import OwnerPanel from './pages/OwnerPanel';
 import './App.css';
 
 function App() {
   return (
+    <LangProvider>
     <AuthProvider>
       <BrowserRouter>
         <Routes>
@@ -23,10 +26,12 @@ function App() {
             <Route path="/venues/:id" element={<VenueDetail />} />
             <Route path="/profile" element={<Profile />} />
             <Route path="/admin" element={<Admin />} />
+            <Route path="/my-venues" element={<OwnerPanel />} />
           </Route>
         </Routes>
       </BrowserRouter>
     </AuthProvider>
+    </LangProvider>
   );
 }
 

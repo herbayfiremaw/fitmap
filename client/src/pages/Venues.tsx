@@ -4,9 +4,11 @@ import { venuesApi, type Venue } from '../api/venues';
 import { citiesApi, type City } from '../api/cities';
 import { trainingTypesApi, type TrainingType } from '../api/training-types';
 import { VenuesMap, type MapMarker } from '../components/Map';
+import { useLang } from '../context/LangContext';
 
 export default function Venues() {
   const navigate = useNavigate();
+  const { lang, t } = useLang();
   const [searchParams, setSearchParams] = useSearchParams();
   const [venues, setVenues] = useState<Venue[]>([]);
   const [cities, setCities] = useState<City[]>([]);
@@ -60,27 +62,29 @@ export default function Venues() {
           lat: Number(v.latitude),
           lng: Number(v.longitude),
           name: v.name,
-          label: v.city?.name_en,
+          label: v.city ? t(v.city) : undefined,
         })),
-    [filtered],
+    [filtered, t],
   );
 
   return (
     <div className="venues-page">
       <div className="venues-header">
-        <h1>Venues</h1>
+        <h1>{lang === 'bg' ? 'Зали' : 'Venues'}</h1>
         <button
           className={`btn ${showMap ? 'btn-primary' : 'btn-outline'}`}
           onClick={() => setShowMap(!showMap)}
         >
-          {showMap ? 'List View' : 'Map View'}
+          {showMap
+            ? (lang === 'bg' ? 'Списък' : 'List View')
+            : (lang === 'bg' ? 'Карта' : 'Map View')}
         </button>
       </div>
 
       <div className="filters">
         <input
           type="text"
-          placeholder="Search by name or address..."
+          placeholder={lang === 'bg' ? 'Търси по име или адрес...' : 'Search by name or address...'}
           value={search}
           onChange={(e) => setSearch(e.target.value)}
           className="search-input"
@@ -91,10 +95,10 @@ export default function Venues() {
             value={selectedCity ?? ''}
             onChange={(e) => updateFilter('city', e.target.value || null)}
           >
-            <option value="">All Cities</option>
+            <option value="">{lang === 'bg' ? 'Всички Градове' : 'All Cities'}</option>
             {cities.map((c) => (
               <option key={c.id} value={c.id}>
-                {c.name_en}
+                {t(c)}
               </option>
             ))}
           </select>
@@ -103,10 +107,10 @@ export default function Venues() {
             value={selectedType ?? ''}
             onChange={(e) => updateFilter('type', e.target.value || null)}
           >
-            <option value="">All Training Types</option>
+            <option value="">{lang === 'bg' ? 'Всички Видове' : 'All Training Types'}</option>
             {trainingTypes.map((tt) => (
               <option key={tt.id} value={tt.id}>
-                {tt.name_en}
+                {t(tt)}
               </option>
             ))}
           </select>
@@ -123,7 +127,7 @@ export default function Venues() {
       )}
 
       {filtered.length === 0 ? (
-        <p className="no-results">No venues found</p>
+        <p className="no-results">{lang === 'bg' ? 'Няма намерени зали' : 'No venues found'}</p>
       ) : !showMap ? (
         <div className="card-grid">
           {filtered.map((venue) => (
@@ -136,18 +140,18 @@ export default function Venues() {
                 <h3>{venue.name}</h3>
                 <span className="venue-price">{venue.price_range}</span>
               </div>
-              <p className="venue-city">{venue.city?.name_en}</p>
+              <p className="venue-city">{venue.city ? t(venue.city) : ''}</p>
               <p className="venue-address">{venue.address}</p>
               <div className="venue-tags">
                 {venue.trainingTypes?.map((tt) => (
                   <span key={tt.id} className="tag-small">
-                    {tt.name_en}
+                    {t(tt)}
                   </span>
                 ))}
               </div>
               <div className="venue-badges">
-                {venue.is_verified && <span className="badge verified">Verified</span>}
-                {venue.is_featured && <span className="badge featured">Featured</span>}
+                {venue.is_verified && <span className="badge verified">{lang === 'bg' ? 'Верифицирана' : 'Verified'}</span>}
+                {venue.is_featured && <span className="badge featured">{lang === 'bg' ? 'Препоръчана' : 'Featured'}</span>}
               </div>
             </Link>
           ))}

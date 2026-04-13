@@ -9,7 +9,7 @@ type Tab = 'overview' | 'users' | 'venues';
 
 export default function Admin() {
   const { user } = useAuth();
-  const { lang, t } = useLang();
+  const { lang } = useLang();
   const navigate = useNavigate();
   const [tab, setTab] = useState<Tab>('overview');
   const [stats, setStats] = useState<DashboardStats | null>(null);
@@ -152,11 +152,11 @@ export default function Admin() {
           <table className="admin-table">
             <thead>
               <tr>
-                <th>Name</th>
-                <th>City</th>
-                <th>Verified</th>
-                <th>Featured</th>
-                <th>Actions</th>
+                <th>{lang === 'bg' ? 'Име' : 'Name'}</th>
+                <th>{lang === 'bg' ? 'Град' : 'City'}</th>
+                <th>{lang === 'bg' ? 'Верифицирана' : 'Verified'}</th>
+                <th>{lang === 'bg' ? 'Препоръчана' : 'Featured'}</th>
+                <th>{lang === 'bg' ? 'Действия' : 'Actions'}</th>
               </tr>
             </thead>
             <tbody>
@@ -165,13 +165,13 @@ export default function Admin() {
                   <td>
                     <Link to={`/venues/${v.id}`}>{v.name}</Link>
                   </td>
-                  <td>{v.city?.name_en}</td>
+                  <td>{v.city ? (lang === 'bg' ? v.city.name_bg : v.city.name_en) : ''}</td>
                   <td>
                     <button
                       className={`btn-sm ${v.is_verified ? 'btn-active' : 'btn-outline'}`}
                       onClick={() => handleVerify(v.id, !v.is_verified)}
                     >
-                      {v.is_verified ? 'Verified' : 'Unverified'}
+                      {v.is_verified ? (lang === 'bg' ? 'Верифицирана' : 'Verified') : (lang === 'bg' ? 'Неверифицирана' : 'Unverified')}
                     </button>
                   </td>
                   <td>
@@ -179,7 +179,7 @@ export default function Admin() {
                       className={`btn-sm ${v.is_featured ? 'btn-active' : 'btn-outline'}`}
                       onClick={() => handleFeature(v.id, !v.is_featured)}
                     >
-                      {v.is_featured ? 'Featured' : 'Not Featured'}
+                      {v.is_featured ? (lang === 'bg' ? 'Препоръчана' : 'Featured') : (lang === 'bg' ? 'Не е препоръчана' : 'Not Featured')}
                     </button>
                   </td>
                   <td>
@@ -187,7 +187,7 @@ export default function Admin() {
                       className="btn-sm btn-danger"
                       onClick={() => handleDeleteVenue(v.id)}
                     >
-                      Delete
+                      {lang === 'bg' ? 'Изтрий' : 'Delete'}
                     </button>
                   </td>
                 </tr>

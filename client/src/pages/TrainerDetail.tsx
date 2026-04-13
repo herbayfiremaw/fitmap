@@ -4,8 +4,6 @@ import { trainersApi, type Trainer } from '../api/trainers';
 import { dayName } from '../api/schedules';
 import { useLang } from '../context/LangContext';
 
-const apiUrl = import.meta.env.VITE_API_URL ?? 'http://localhost:3000';
-
 export default function TrainerDetail() {
   const { id } = useParams<{ id: string }>();
   const { lang, t } = useLang();
@@ -77,7 +75,7 @@ export default function TrainerDetail() {
             <tbody>
               {trainer.schedules.map((s) => (
                 <tr key={s.id}>
-                  <td>{dayName(s.day_of_week)}</td>
+                  <td>{dayName(s.day_of_week, lang)}</td>
                   <td>{s.start_time} - {s.end_time}</td>
                   <td>{s.trainingType ? t(s.trainingType) : ''}</td>
                   <td>

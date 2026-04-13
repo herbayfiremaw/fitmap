@@ -247,7 +247,7 @@ export default function VenueDetail() {
             <tbody>
               {schedules.map((s) => (
                 <tr key={s.id}>
-                  <td>{dayName(s.day_of_week)}</td>
+                  <td>{dayName(s.day_of_week, lang)}</td>
                   <td>{s.start_time} - {s.end_time}</td>
                   <td>{s.trainingType ? t(s.trainingType) : ''}</td>
                   <td>{s.trainer?.name ?? '-'}</td>

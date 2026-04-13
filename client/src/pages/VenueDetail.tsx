@@ -3,6 +3,7 @@ import { useParams, Link } from 'react-router-dom';
 import { venuesApi, type Venue } from '../api/venues';
 import { reviewsApi, type Review } from '../api/reviews';
 import { schedulesApi, dayName, type Schedule } from '../api/schedules';
+import { favoritesApi } from '../api/favorites';
 import { useAuth } from '../context/AuthContext';
 import { useLang } from '../context/LangContext';
 import { VenueMap } from '../components/Map';
@@ -20,6 +21,7 @@ export default function VenueDetail() {
   const [error, setError] = useState('');
   const [lightbox, setLightbox] = useState<number | null>(null);
   const [uploading, setUploading] = useState(false);
+  const [isFav, setIsFav] = useState(false);
   const fileInput = useRef<HTMLInputElement>(null);
 
   const isOwner = user && venue && (user.id === venue.owner_id || user.role === 'admin');
@@ -30,6 +32,20 @@ export default function VenueDetail() {
     reviewsApi.getByVenue(id).then(setReviews);
     schedulesApi.getByVenue(id).then(setSchedules);
   }, [id]);
+
+  useEffect(() => {
+    if (user && id) {
+      favoritesApi.getIds().then((ids) => setIsFav(ids.includes(id)));
+    }
+  }, [user, id]);
+
+  const toggleFav = async () => {
+    if (!user || !id) return;
+    try {
+      const { favorited } = await favoritesApi.toggle(id);
+      setIsFav(favorited);
+    } catch { /* silently fail */ }
+  };
 
   const avgRating =
     reviews.length > 0
@@ -93,7 +109,20 @@ export default function VenueDetail() {
 
       <div className="venue-header">
         <div>
-          <h1>{venue.name}</h1>
+          <div className="venue-title-row">
+            <h1>{venue.name}</h1>
+            {user && (
+              <button
+                className={`fav-btn fav-btn-lg ${isFav ? 'fav-active' : ''}`}
+                onClick={toggleFav}
+                title={isFav
+                  ? (lang === 'bg' ? 'Премахни от любими' : 'Remove from favorites')
+                  : (lang === 'bg' ? 'Добави в любими' : 'Add to favorites')}
+              >
+                {isFav ? '\u2665' : '\u2661'}
+              </button>
+            )}
+          </div>
           <p className="venue-city">{venue.city ? t(venue.city) : ''}</p>
           <p className="venue-address">{venue.address}</p>
         </div>
@@ -250,7 +279,7 @@ export default function VenueDetail() {
                   <td>{dayName(s.day_of_week, lang)}</td>
                   <td>{s.start_time} - {s.end_time}</td>
                   <td>{s.trainingType ? t(s.trainingType) : ''}</td>
-                  <td>{s.trainer?.name ?? '-'}</td>
+                  <td>{s.trainer ? t(s.trainer) : '-'}</td>
                 </tr>
               ))}
             </tbody>

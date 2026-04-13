@@ -8,7 +8,11 @@ export class CreateTrainerDto {
 
   @ApiProperty({ example: 'Георги Петров' })
   @IsString()
-  name: string;
+  name_bg: string;
+
+  @ApiProperty({ example: 'Georgi Petrov' })
+  @IsString()
+  name_en: string;
 
   @ApiPropertyOptional({ example: 'Треньор по бокс с 10 години опит' })
   @IsString()

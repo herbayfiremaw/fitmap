@@ -9,7 +9,7 @@ export interface Schedule {
   start_time: string;
   end_time: string;
   trainingType: { id: number; name_en: string; name_bg: string };
-  trainer: { id: string; name: string } | null;
+  trainer: { id: string; name_bg: string; name_en: string } | null;
 }
 
 const DAYS_EN = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];

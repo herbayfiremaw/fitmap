@@ -371,7 +371,7 @@ export default function OwnerPanel() {
                     <td>{dayName(s.day_of_week, lang)}</td>
                     <td>{s.start_time} — {s.end_time}</td>
                     <td>{s.trainingType ? t(s.trainingType) : ''}</td>
-                    <td>{s.trainer?.name || '—'}</td>
+                    <td>{s.trainer ? t(s.trainer) : '—'}</td>
                     <td>
                       <button className="btn-sm btn-danger" onClick={() => handleDeleteSchedule(s.id)}>{lang === 'bg' ? 'Премахни' : 'Remove'}</button>
                     </td>

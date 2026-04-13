@@ -253,35 +253,40 @@ async function seed() {
   // --- Trainers ---
   const trainersData = [
     {
-      name: 'Димитър Стоянов',
+      name_bg: 'Димитър Стоянов',
+      name_en: 'Dimitar Stoyanov',
       bio_bg: 'Професионален боец с 10 години опит в ММА.',
       bio_en: 'Professional fighter with 10 years of MMA experience.',
       specialties: ['MMA', 'Boxing', 'Wrestling'],
       venue_id: savedVenues['Fight Club Sofia'].id,
     },
     {
-      name: 'Петър Николов',
+      name_bg: 'Петър Николов',
+      name_en: 'Petar Nikolov',
       bio_bg: 'Треньор по кикбокс и муай тай.',
       bio_en: 'Kickboxing and Muay Thai coach.',
       specialties: ['Kickboxing', 'MMA'],
       venue_id: savedVenues['Fight Club Sofia'].id,
     },
     {
-      name: 'Анна Георгиева',
+      name_bg: 'Анна Георгиева',
+      name_en: 'Anna Georgieva',
       bio_bg: 'Сертифициран инструктор по йога с 8 години опит.',
       bio_en: 'Certified yoga instructor with 8 years of experience.',
       specialties: ['Yoga', 'Pilates'],
       venue_id: savedVenues['Zen Yoga Studio'].id,
     },
     {
-      name: 'Стефан Маринов',
+      name_bg: 'Стефан Маринов',
+      name_en: 'Stefan Marinov',
       bio_bg: 'Фитнес треньор и бивш състезател по вдигане на тежести.',
       bio_en: 'Fitness trainer and former weightlifting competitor.',
       specialties: ['Gym/Fitness', 'CrossFit'],
       venue_id: savedVenues['Iron Gym Varna'].id,
     },
     {
-      name: 'Калина Василева',
+      name_bg: 'Калина Василева',
+      name_en: 'Kalina Vasileva',
       bio_bg: 'Професионална танцьорка и хореограф.',
       bio_en: 'Professional dancer and choreographer.',
       specialties: ['Dance'],
@@ -291,34 +296,34 @@ async function seed() {
 
   const savedTrainers: Record<string, Trainer> = {};
   for (const t of trainersData) {
-    let existing = await trainerRepo.findOneBy({ name: t.name, venue_id: t.venue_id });
+    let existing = await trainerRepo.findOneBy({ name_en: t.name_en, venue_id: t.venue_id });
     if (!existing) {
       existing = await trainerRepo.save(trainerRepo.create(t));
-      console.log(`Created trainer: ${t.name}`);
+      console.log(`Created trainer: ${t.name_en}`);
     }
-    savedTrainers[t.name] = existing;
+    savedTrainers[t.name_en] = existing;
   }
 
   // --- Schedules ---
   const schedulesData = [
     // Fight Club Sofia
-    { venue_id: savedVenues['Fight Club Sofia'].id, training_type_id: savedTypes['mma'].id, trainer_id: savedTrainers['Димитър Стоянов'].id, day_of_week: 1, start_time: '09:00', end_time: '10:30' },
-    { venue_id: savedVenues['Fight Club Sofia'].id, training_type_id: savedTypes['kickboxing'].id, trainer_id: savedTrainers['Петър Николов'].id, day_of_week: 1, start_time: '18:00', end_time: '19:30' },
-    { venue_id: savedVenues['Fight Club Sofia'].id, training_type_id: savedTypes['boxing'].id, trainer_id: savedTrainers['Димитър Стоянов'].id, day_of_week: 3, start_time: '18:00', end_time: '19:30' },
-    { venue_id: savedVenues['Fight Club Sofia'].id, training_type_id: savedTypes['bjj'].id, trainer_id: savedTrainers['Димитър Стоянов'].id, day_of_week: 5, start_time: '18:00', end_time: '19:30' },
+    { venue_id: savedVenues['Fight Club Sofia'].id, training_type_id: savedTypes['mma'].id, trainer_id: savedTrainers['Dimitar Stoyanov'].id, day_of_week: 1, start_time: '09:00', end_time: '10:30' },
+    { venue_id: savedVenues['Fight Club Sofia'].id, training_type_id: savedTypes['kickboxing'].id, trainer_id: savedTrainers['Petar Nikolov'].id, day_of_week: 1, start_time: '18:00', end_time: '19:30' },
+    { venue_id: savedVenues['Fight Club Sofia'].id, training_type_id: savedTypes['boxing'].id, trainer_id: savedTrainers['Dimitar Stoyanov'].id, day_of_week: 3, start_time: '18:00', end_time: '19:30' },
+    { venue_id: savedVenues['Fight Club Sofia'].id, training_type_id: savedTypes['bjj'].id, trainer_id: savedTrainers['Dimitar Stoyanov'].id, day_of_week: 5, start_time: '18:00', end_time: '19:30' },
     // Zen Yoga Studio
-    { venue_id: savedVenues['Zen Yoga Studio'].id, training_type_id: savedTypes['yoga'].id, trainer_id: savedTrainers['Анна Георгиева'].id, day_of_week: 1, start_time: '07:00', end_time: '08:00' },
-    { venue_id: savedVenues['Zen Yoga Studio'].id, training_type_id: savedTypes['pilates'].id, trainer_id: savedTrainers['Анна Георгиева'].id, day_of_week: 2, start_time: '10:00', end_time: '11:00' },
-    { venue_id: savedVenues['Zen Yoga Studio'].id, training_type_id: savedTypes['yoga'].id, trainer_id: savedTrainers['Анна Георгиева'].id, day_of_week: 3, start_time: '07:00', end_time: '08:00' },
-    { venue_id: savedVenues['Zen Yoga Studio'].id, training_type_id: savedTypes['pilates'].id, trainer_id: savedTrainers['Анна Георгиева'].id, day_of_week: 4, start_time: '10:00', end_time: '11:00' },
-    { venue_id: savedVenues['Zen Yoga Studio'].id, training_type_id: savedTypes['yoga'].id, trainer_id: savedTrainers['Анна Георгиева'].id, day_of_week: 5, start_time: '07:00', end_time: '08:00' },
+    { venue_id: savedVenues['Zen Yoga Studio'].id, training_type_id: savedTypes['yoga'].id, trainer_id: savedTrainers['Anna Georgieva'].id, day_of_week: 1, start_time: '07:00', end_time: '08:00' },
+    { venue_id: savedVenues['Zen Yoga Studio'].id, training_type_id: savedTypes['pilates'].id, trainer_id: savedTrainers['Anna Georgieva'].id, day_of_week: 2, start_time: '10:00', end_time: '11:00' },
+    { venue_id: savedVenues['Zen Yoga Studio'].id, training_type_id: savedTypes['yoga'].id, trainer_id: savedTrainers['Anna Georgieva'].id, day_of_week: 3, start_time: '07:00', end_time: '08:00' },
+    { venue_id: savedVenues['Zen Yoga Studio'].id, training_type_id: savedTypes['pilates'].id, trainer_id: savedTrainers['Anna Georgieva'].id, day_of_week: 4, start_time: '10:00', end_time: '11:00' },
+    { venue_id: savedVenues['Zen Yoga Studio'].id, training_type_id: savedTypes['yoga'].id, trainer_id: savedTrainers['Anna Georgieva'].id, day_of_week: 5, start_time: '07:00', end_time: '08:00' },
     // Iron Gym Varna
-    { venue_id: savedVenues['Iron Gym Varna'].id, training_type_id: savedTypes['gym-fitness'].id, trainer_id: savedTrainers['Стефан Маринов'].id, day_of_week: 1, start_time: '08:00', end_time: '09:30' },
-    { venue_id: savedVenues['Iron Gym Varna'].id, training_type_id: savedTypes['crossfit'].id, trainer_id: savedTrainers['Стефан Маринов'].id, day_of_week: 3, start_time: '17:00', end_time: '18:30' },
+    { venue_id: savedVenues['Iron Gym Varna'].id, training_type_id: savedTypes['gym-fitness'].id, trainer_id: savedTrainers['Stefan Marinov'].id, day_of_week: 1, start_time: '08:00', end_time: '09:30' },
+    { venue_id: savedVenues['Iron Gym Varna'].id, training_type_id: savedTypes['crossfit'].id, trainer_id: savedTrainers['Stefan Marinov'].id, day_of_week: 3, start_time: '17:00', end_time: '18:30' },
     { venue_id: savedVenues['Iron Gym Varna'].id, training_type_id: savedTypes['spinning'].id, trainer_id: undefined, day_of_week: 5, start_time: '08:00', end_time: '09:00' },
     // Dance Academy
-    { venue_id: savedVenues['Dance Academy'].id, training_type_id: savedTypes['dance'].id, trainer_id: savedTrainers['Калина Василева'].id, day_of_week: 2, start_time: '19:00', end_time: '20:30' },
-    { venue_id: savedVenues['Dance Academy'].id, training_type_id: savedTypes['dance'].id, trainer_id: savedTrainers['Калина Василева'].id, day_of_week: 4, start_time: '19:00', end_time: '20:30' },
+    { venue_id: savedVenues['Dance Academy'].id, training_type_id: savedTypes['dance'].id, trainer_id: savedTrainers['Kalina Vasileva'].id, day_of_week: 2, start_time: '19:00', end_time: '20:30' },
+    { venue_id: savedVenues['Dance Academy'].id, training_type_id: savedTypes['dance'].id, trainer_id: savedTrainers['Kalina Vasileva'].id, day_of_week: 4, start_time: '19:00', end_time: '20:30' },
   ];
 
   for (const s of schedulesData) {

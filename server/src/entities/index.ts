@@ -5,3 +5,4 @@ export { Venue, PriceRange } from './venue.entity';
 export { Trainer } from './trainer.entity';
 export { Schedule } from './schedule.entity';
 export { Review } from './review.entity';
+export { Favorite } from './favorite.entity';

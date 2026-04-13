@@ -39,6 +39,7 @@ export default function Navbar() {
         {navLink('/trainers', lang === 'bg' ? 'Треньори' : 'Trainers')}
         {user ? (
           <>
+            {navLink('/favorites', lang === 'bg' ? 'Любими' : 'Favorites')}
             {(user.role === 'owner' || user.role === 'admin') && navLink('/my-venues', lang === 'bg' ? 'Моите Зали' : 'My Venues')}
             {user.role === 'admin' && navLink('/admin', lang === 'bg' ? 'Админ' : 'Admin')}
             {navLink('/profile', user.name)}

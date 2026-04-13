@@ -4,12 +4,15 @@ import { venuesApi, type Venue } from '../api/venues';
 import { citiesApi, type City } from '../api/cities';
 import { trainingTypesApi, type TrainingType } from '../api/training-types';
 import { VenuesMap, type MapMarker } from '../components/Map';
+import { favoritesApi } from '../api/favorites';
+import { useAuth } from '../context/AuthContext';
 import { useLang } from '../context/LangContext';
 
 const ITEMS_PER_PAGE = 12;
 
 export default function Venues() {
   const navigate = useNavigate();
+  const { user } = useAuth();
   const { lang, t } = useLang();
   const [searchParams, setSearchParams] = useSearchParams();
   const [venues, setVenues] = useState<Venue[]>([]);
@@ -18,6 +21,7 @@ export default function Venues() {
   const [search, setSearch] = useState('');
   const [showMap, setShowMap] = useState(false);
   const [page, setPage] = useState(1);
+  const [favIds, setFavIds] = useState<Set<string>>(new Set());
 
   const selectedCity = searchParams.get('city');
   const selectedType = searchParams.get('type');
@@ -27,6 +31,24 @@ export default function Venues() {
     citiesApi.getAll().then(setCities);
     trainingTypesApi.getAll().then(setTrainingTypes);
   }, []);
+
+  useEffect(() => {
+    if (user) favoritesApi.getIds().then((ids) => setFavIds(new Set(ids)));
+  }, [user]);
+
+  const toggleFav = async (e: React.MouseEvent, venueId: string) => {
+    e.preventDefault();
+    e.stopPropagation();
+    if (!user) { navigate('/login'); return; }
+    try {
+      const { favorited } = await favoritesApi.toggle(venueId);
+      setFavIds((prev) => {
+        const next = new Set(prev);
+        if (favorited) next.add(venueId); else next.delete(venueId);
+        return next;
+      });
+    } catch { /* silently fail */ }
+  };
 
   const filtered = useMemo(() => {
     return venues.filter((v) => {
@@ -140,29 +162,39 @@ export default function Venues() {
         <>
           <div className="card-grid">
             {paginated.map((venue) => (
-              <Link
-                key={venue.id}
-                to={`/venues/${venue.id}`}
-                className="venue-card"
-              >
-                <div className="venue-card-header">
-                  <h3>{venue.name}</h3>
-                  <span className="venue-price">{venue.price_range}</span>
-                </div>
-                <p className="venue-city">{venue.city ? t(venue.city) : ''}</p>
-                <p className="venue-address">{venue.address}</p>
-                <div className="venue-tags">
-                  {venue.trainingTypes?.map((tt) => (
-                    <span key={tt.id} className="tag-small">
-                      {t(tt)}
-                    </span>
-                  ))}
-                </div>
-                <div className="venue-badges">
-                  {venue.is_verified && <span className="badge verified">{lang === 'bg' ? 'Верифицирана' : 'Verified'}</span>}
-                  {venue.is_featured && <span className="badge featured">{lang === 'bg' ? 'Препоръчана' : 'Featured'}</span>}
-                </div>
-              </Link>
+              <div key={venue.id} className="venue-card-wrapper">
+                <Link
+                  to={`/venues/${venue.id}`}
+                  className="venue-card"
+                >
+                  <div className="venue-card-header">
+                    <h3>{venue.name}</h3>
+                    <span className="venue-price">{venue.price_range}</span>
+                  </div>
+                  <p className="venue-city">{venue.city ? t(venue.city) : ''}</p>
+                  <p className="venue-address">{venue.address}</p>
+                  <div className="venue-tags">
+                    {venue.trainingTypes?.map((tt) => (
+                      <span key={tt.id} className="tag-small">
+                        {t(tt)}
+                      </span>
+                    ))}
+                  </div>
+                  <div className="venue-badges">
+                    {venue.is_verified && <span className="badge verified">{lang === 'bg' ? 'Верифицирана' : 'Verified'}</span>}
+                    {venue.is_featured && <span className="badge featured">{lang === 'bg' ? 'Препоръчана' : 'Featured'}</span>}
+                  </div>
+                </Link>
+                <button
+                  className={`fav-btn ${favIds.has(venue.id) ? 'fav-active' : ''}`}
+                  onClick={(e) => toggleFav(e, venue.id)}
+                  title={favIds.has(venue.id)
+                    ? (lang === 'bg' ? 'Премахни от любими' : 'Remove from favorites')
+                    : (lang === 'bg' ? 'Добави в любими' : 'Add to favorites')}
+                >
+                  {favIds.has(venue.id) ? '\u2665' : '\u2661'}
+                </button>
+              </div>
             ))}
           </div>
 

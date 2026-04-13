@@ -10,7 +10,8 @@ import { VenuesModule } from './venues/venues.module';
 import { TrainersModule } from './trainers/trainers.module';
 import { SchedulesModule } from './schedules/schedules.module';
 import { ReviewsModule } from './reviews/reviews.module';
-import { User, City, TrainingType, Venue, Trainer, Schedule, Review } from './entities';
+import { FavoritesModule } from './favorites/favorites.module';
+import { User, City, TrainingType, Venue, Trainer, Schedule, Review, Favorite } from './entities';
 
 @Module({
   imports: [
@@ -23,7 +24,7 @@ import { User, City, TrainingType, Venue, Trainer, Schedule, Review } from './en
           return {
             type: 'postgres' as const,
             url: databaseUrl,
-            entities: [User, City, TrainingType, Venue, Trainer, Schedule, Review],
+            entities: [User, City, TrainingType, Venue, Trainer, Schedule, Review, Favorite],
             migrations: ['dist/migrations/*.js'],
             migrationsRun: true,
           };
@@ -35,7 +36,7 @@ import { User, City, TrainingType, Venue, Trainer, Schedule, Review } from './en
           username: config.get<string>('POSTGRES_USER', 'fitmap'),
           password: config.get<string>('POSTGRES_PASSWORD', 'fitmap_dev'),
           database: config.get<string>('POSTGRES_DB', 'fitmap'),
-          entities: [User, City, TrainingType, Venue, Trainer, Schedule, Review],
+          entities: [User, City, TrainingType, Venue, Trainer, Schedule, Review, Favorite],
           migrations: ['dist/migrations/*.js'],
           migrationsRun: true,
         };
@@ -48,6 +49,7 @@ import { User, City, TrainingType, Venue, Trainer, Schedule, Review } from './en
     TrainersModule,
     SchedulesModule,
     ReviewsModule,
+    FavoritesModule,
   ],
   controllers: [AppController],
   providers: [AppService],

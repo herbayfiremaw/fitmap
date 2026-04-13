@@ -29,15 +29,15 @@ export default function TrainerDetail() {
           {trainer.photo_url ? (
             <img
               src={trainer.photo_url.startsWith('/') ? `${baseUrl}${trainer.photo_url}` : trainer.photo_url}
-              alt={trainer.name}
+              alt={t(trainer)}
             />
           ) : (
-            <span>{trainer.name.charAt(0).toUpperCase()}</span>
+            <span>{t(trainer).charAt(0).toUpperCase()}</span>
           )}
         </div>
 
         <div className="trainer-profile-info">
-          <h1>{trainer.name}</h1>
+          <h1>{t(trainer)}</h1>
           {trainer.venue && (
             <p className="trainer-venue-link">
               <Link to={`/venues/${trainer.venue.id}`}>{trainer.venue.name}</Link>

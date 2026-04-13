@@ -7,7 +7,7 @@ const ITEMS_PER_PAGE = 12;
 const apiUrl = import.meta.env.VITE_API_URL ?? 'http://localhost:3000';
 
 export default function Trainers() {
-  const { lang } = useLang();
+  const { lang, t } = useLang();
   const [trainers, setTrainers] = useState<Trainer[]>([]);
   const [search, setSearch] = useState('');
   const [page, setPage] = useState(1);
@@ -20,9 +20,10 @@ export default function Trainers() {
     if (!search) return trainers;
     const q = search.toLowerCase();
     return trainers.filter(
-      (t) =>
-        t.name.toLowerCase().includes(q) ||
-        t.specialties.some((s) => s.toLowerCase().includes(q)),
+      (tr) =>
+        tr.name_bg.toLowerCase().includes(q) ||
+        tr.name_en.toLowerCase().includes(q) ||
+        tr.specialties.some((s) => s.toLowerCase().includes(q)),
     );
   }, [trainers, search]);
 
@@ -53,13 +54,13 @@ export default function Trainers() {
                 {trainer.photo_url ? (
                   <img
                     src={trainer.photo_url.startsWith('/') ? `${apiUrl}${trainer.photo_url}` : trainer.photo_url}
-                    alt={trainer.name}
+                    alt={t(trainer)}
                   />
                 ) : (
-                  <span>{trainer.name.charAt(0).toUpperCase()}</span>
+                  <span>{t(trainer).charAt(0).toUpperCase()}</span>
                 )}
               </div>
-              <h3>{trainer.name}</h3>
+              <h3>{t(trainer)}</h3>
               {trainer.venue && (
                 <p className="trainer-venue">{trainer.venue.name}</p>
               )}

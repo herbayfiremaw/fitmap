@@ -21,14 +21,14 @@ export class TrainersService {
   findAll(): Promise<Trainer[]> {
     return this.trainerRepo.find({
       relations: ['venue'],
-      order: { name: 'ASC' },
+      order: { name_en: 'ASC' },
     });
   }
 
   findByVenue(venueId: string): Promise<Trainer[]> {
     return this.trainerRepo.find({
       where: { venue_id: venueId },
-      order: { name: 'ASC' },
+      order: { name_en: 'ASC' },
     });
   }
 

@@ -12,6 +12,7 @@ import Admin from './pages/Admin';
 import OwnerPanel from './pages/OwnerPanel';
 import Trainers from './pages/Trainers';
 import TrainerDetail from './pages/TrainerDetail';
+import Favorites from './pages/Favorites';
 import './App.css';
 
 function App() {
@@ -28,6 +29,7 @@ function App() {
             <Route path="/venues/:id" element={<VenueDetail />} />
             <Route path="/trainers" element={<Trainers />} />
             <Route path="/trainers/:id" element={<TrainerDetail />} />
+            <Route path="/favorites" element={<Favorites />} />
             <Route path="/profile" element={<Profile />} />
             <Route path="/admin" element={<Admin />} />
             <Route path="/my-venues" element={<OwnerPanel />} />

@@ -22,7 +22,10 @@ export class Trainer {
   venue_id: string;
 
   @Column()
-  name: string;
+  name_bg: string;
+
+  @Column()
+  name_en: string;
 
   @Column({ type: 'text', nullable: true })
   bio_bg: string;

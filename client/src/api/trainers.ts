@@ -4,7 +4,8 @@ import type { Schedule } from './schedules';
 export interface Trainer {
   id: string;
   venue_id: string;
-  name: string;
+  name_bg: string;
+  name_en: string;
   bio_bg: string | null;
   bio_en: string | null;
   photo_url: string | null;

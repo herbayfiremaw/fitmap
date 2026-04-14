@@ -6,6 +6,7 @@ import { venuesApi, type Venue, type CreateVenueData, type UpdateVenueData } fro
 import { citiesApi, type City } from '../api/cities';
 import { trainingTypesApi, type TrainingType } from '../api/training-types';
 import { schedulesApi, type Schedule, type CreateScheduleData, dayName } from '../api/schedules';
+import { trainersApi, type Trainer } from '../api/trainers';
 
 const apiUrl = import.meta.env.VITE_API_URL ?? 'http://localhost:3000';
 
@@ -21,6 +22,7 @@ export default function OwnerPanel() {
   const [trainingTypes, setTrainingTypes] = useState<TrainingType[]>([]);
   const [selectedVenue, setSelectedVenue] = useState<Venue | null>(null);
   const [schedules, setSchedules] = useState<Schedule[]>([]);
+  const [venueTrainers, setVenueTrainers] = useState<Trainer[]>([]);
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
 
@@ -93,8 +95,12 @@ export default function OwnerPanel() {
 
   const openSchedules = async (venue: Venue) => {
     setSelectedVenue(venue);
-    const s = await schedulesApi.getByVenue(venue.id);
+    const [s, tr] = await Promise.all([
+      schedulesApi.getByVenue(venue.id),
+      trainersApi.getByVenue(venue.id),
+    ]);
     setSchedules(s);
+    setVenueTrainers(tr);
     setSchedForm({
       venue_id: venue.id, training_type_id: trainingTypes[0]?.id || 0,
       day_of_week: 1, start_time: '09:00', end_time: '10:00',
@@ -397,6 +403,15 @@ export default function OwnerPanel() {
                 </select>
               </div>
             </div>
+            {venueTrainers.length > 0 && (
+              <div className="form-group">
+                <label>{lang === 'bg' ? 'Треньор' : 'Trainer'}</label>
+                <select value={schedForm.trainer_id ?? ''} onChange={(e) => setSchedForm({ ...schedForm, trainer_id: e.target.value || undefined })}>
+                  <option value="">{lang === 'bg' ? '— Без треньор —' : '— No trainer —'}</option>
+                  {venueTrainers.map((tr) => <option key={tr.id} value={tr.id}>{t(tr)}</option>)}
+                </select>
+              </div>
+            )}
             <div className="form-row">
               <div className="form-group">
                 <label>{lang === 'bg' ? 'Начален час' : 'Start Time'}</label>

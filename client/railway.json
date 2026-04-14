@@ -1,7 +1,10 @@
 {
   "$schema": "https://railway.com/railway.schema.json",
   "build": {
-    "dockerfilePath": "Dockerfile.prod"
+    "dockerfilePath": "Dockerfile.prod",
+    "buildArgs": {
+      "VITE_API_URL": "${{VITE_API_URL}}"
+    }
   },
   "deploy": {
     "restartPolicyType": "ON_FAILURE",

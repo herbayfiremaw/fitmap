@@ -5,7 +5,7 @@ import {
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { In, Repository } from 'typeorm';
-import { TrainingType, UserRole, Venue } from '../entities';
+import { PriceRange, TrainingType, UserRole, Venue } from '../entities';
 import { CreateVenueDto } from './dto/create-venue.dto';
 import { UpdateVenueDto } from './dto/update-venue.dto';
 
@@ -18,11 +18,47 @@ export class VenuesService {
     private readonly ttRepo: Repository<TrainingType>,
   ) {}
 
-  findAll(): Promise<Venue[]> {
-    return this.venueRepo.find({
+  private async withRatings(venues: Venue[]): Promise<any[]> {
+    if (venues.length === 0) return [];
+    const ids = venues.map((v) => v.id);
+    const ratings: { venue_id: string; avg: string; cnt: string }[] =
+      await this.venueRepo.query(
+        `SELECT venue_id, COALESCE(AVG(rating), 0) as avg, COUNT(id) as cnt
+         FROM reviews WHERE venue_id = ANY($1) GROUP BY venue_id`,
+        [ids],
+      );
+    const map = new Map(ratings.map((r) => [r.venue_id, r]));
+    return venues.map((v) => ({
+      ...v,
+      avg_rating: parseFloat(map.get(v.id)?.avg ?? '0'),
+      review_count: parseInt(map.get(v.id)?.cnt ?? '0'),
+    }));
+  }
+
+  async findAll(): Promise<any[]> {
+    const venues = await this.venueRepo.find({
+      where: { is_verified: true },
       relations: ['city', 'trainingTypes'],
       order: { created_at: 'DESC' },
     });
+    return this.withRatings(venues);
+  }
+
+  async findAllAdmin(): Promise<any[]> {
+    const venues = await this.venueRepo.find({
+      relations: ['city', 'trainingTypes'],
+      order: { created_at: 'DESC' },
+    });
+    return this.withRatings(venues);
+  }
+
+  async findByOwner(ownerId: string): Promise<any[]> {
+    const venues = await this.venueRepo.find({
+      where: { owner_id: ownerId },
+      relations: ['city', 'trainingTypes'],
+      order: { created_at: 'DESC' },
+    });
+    return this.withRatings(venues);
   }
 
   async findOne(id: string): Promise<Venue> {
@@ -34,10 +70,20 @@ export class VenuesService {
     return venue;
   }
 
+  private calcPriceRange(price: number): PriceRange {
+    if (price <= 10) return PriceRange.LOW;
+    if (price <= 40) return PriceRange.MEDIUM;
+    return PriceRange.HIGH;
+  }
+
   async create(dto: CreateVenueDto, ownerId: string): Promise<Venue> {
     const { training_type_ids, ...rest } = dto;
 
-    const venue = this.venueRepo.create({ ...rest, owner_id: ownerId });
+    const venue = this.venueRepo.create({
+      ...rest,
+      owner_id: ownerId,
+      price_range: this.calcPriceRange(rest.training_price),
+    });
 
     if (training_type_ids?.length) {
       venue.trainingTypes = await this.ttRepo.findBy({
@@ -62,6 +108,15 @@ export class VenuesService {
 
     const { training_type_ids, ...rest } = dto;
     Object.assign(venue, rest);
+
+    if (rest.training_price !== undefined) {
+      venue.price_range = this.calcPriceRange(rest.training_price);
+    }
+
+    // Owner edits require re-approval; admin edits stay verified
+    if (userRole !== UserRole.ADMIN) {
+      venue.is_verified = false;
+    }
 
     if (training_type_ids) {
       venue.trainingTypes = await this.ttRepo.findBy({

@@ -4,6 +4,7 @@ import { venuesApi, type Venue } from '../api/venues';
 import { citiesApi, type City } from '../api/cities';
 import { trainingTypesApi, type TrainingType } from '../api/training-types';
 import { VenuesMap, type MapMarker } from '../components/Map';
+import { StarsDisplay } from '../components/Stars';
 import { favoritesApi } from '../api/favorites';
 import { useAuth } from '../context/AuthContext';
 import { useLang } from '../context/LangContext';
@@ -22,6 +23,8 @@ export default function Venues() {
   const [showMap, setShowMap] = useState(false);
   const [page, setPage] = useState(1);
   const [favIds, setFavIds] = useState<Set<string>>(new Set());
+  const [priceFilter, setPriceFilter] = useState<string>('');
+  const [ratingFilter, setRatingFilter] = useState<string>('');
 
   const selectedCity = searchParams.get('city');
   const selectedType = searchParams.get('type');
@@ -64,14 +67,16 @@ export default function Venues() {
         !v.address.toLowerCase().includes(search.toLowerCase())
       )
         return false;
+      if (priceFilter && v.price_range !== priceFilter) return false;
+      if (ratingFilter && (v.avg_rating || 0) < Number(ratingFilter)) return false;
       return true;
     });
-  }, [venues, selectedCity, selectedType, search]);
+  }, [venues, selectedCity, selectedType, search, priceFilter, ratingFilter]);
 
   const totalPages = Math.ceil(filtered.length / ITEMS_PER_PAGE);
   const paginated = filtered.slice((page - 1) * ITEMS_PER_PAGE, page * ITEMS_PER_PAGE);
 
-  useEffect(() => setPage(1), [search, selectedCity, selectedType]);
+  useEffect(() => setPage(1), [search, selectedCity, selectedType, priceFilter, ratingFilter]);
 
   const updateFilter = (key: string, value: string | null) => {
     const params = new URLSearchParams(searchParams);
@@ -144,6 +149,21 @@ export default function Venues() {
               </option>
             ))}
           </select>
+
+          <select value={priceFilter} onChange={(e) => setPriceFilter(e.target.value)}>
+            <option value="">{lang === 'bg' ? 'Всички Цени' : 'All Prices'}</option>
+            <option value="€">€ — {lang === 'bg' ? 'Бюджетно' : 'Budget'}</option>
+            <option value="€€">€€ — {lang === 'bg' ? 'Средно' : 'Mid-range'}</option>
+            <option value="€€€">€€€ — {lang === 'bg' ? 'Премиум' : 'Premium'}</option>
+          </select>
+
+          <select value={ratingFilter} onChange={(e) => setRatingFilter(e.target.value)}>
+            <option value="">{lang === 'bg' ? 'Всички Оценки' : 'All Ratings'}</option>
+            <option value="4">4+ ★</option>
+            <option value="3">3+ ★</option>
+            <option value="2">2+ ★</option>
+            <option value="1">1+ ★</option>
+          </select>
         </div>
       </div>
 
@@ -180,9 +200,17 @@ export default function Venues() {
                       </span>
                     ))}
                   </div>
-                  <div className="venue-badges">
-                    {venue.is_verified && <span className="badge verified">{lang === 'bg' ? 'Верифицирана' : 'Verified'}</span>}
-                    {venue.is_featured && <span className="badge featured">{lang === 'bg' ? 'Препоръчана' : 'Featured'}</span>}
+                  <div className="venue-card-footer">
+                    <div className="venue-badges">
+                      {venue.is_verified && <span className="badge verified">{lang === 'bg' ? 'Верифицирана' : 'Verified'}</span>}
+                      {venue.is_featured && <span className="badge featured">{lang === 'bg' ? 'Препоръчана' : 'Featured'}</span>}
+                    </div>
+                    {venue.avg_rating > 0 && (
+                      <span className="venue-card-rating">
+                        <StarsDisplay rating={venue.avg_rating} size={14} />
+                        <span className="rating-text">{venue.avg_rating.toFixed(1)} ({venue.review_count})</span>
+                      </span>
+                    )}
                   </div>
                 </Link>
                 <button

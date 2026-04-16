@@ -5,7 +5,7 @@ import { useLang } from '../context/LangContext';
 import { adminApi, type DashboardStats, type AdminUser } from '../api/admin';
 import { venuesApi, type Venue } from '../api/venues';
 
-type Tab = 'overview' | 'users' | 'venues';
+type Tab = 'overview' | 'pending' | 'users' | 'venues';
 
 export default function Admin() {
   const { user } = useAuth();
@@ -23,7 +23,7 @@ export default function Admin() {
     }
     adminApi.getStats().then(setStats);
     adminApi.getUsers().then(setUsers);
-    venuesApi.getAll().then(setVenues);
+    venuesApi.getAllAdmin().then(setVenues);
   }, [user, navigate]);
 
   const handleRoleChange = async (id: string, role: string) => {
@@ -73,6 +73,9 @@ export default function Admin() {
         <button className={`admin-tab ${tab === 'overview' ? 'active' : ''}`} onClick={() => setTab('overview')}>
           {lang === 'bg' ? 'Обзор' : 'Overview'}
         </button>
+        <button className={`admin-tab ${tab === 'pending' ? 'active' : ''}`} onClick={() => setTab('pending')}>
+          {lang === 'bg' ? 'Чакащи' : 'Pending'} ({venues.filter((v) => !v.is_verified).length})
+        </button>
         <button className={`admin-tab ${tab === 'users' ? 'active' : ''}`} onClick={() => setTab('users')}>
           {lang === 'bg' ? 'Потребители' : 'Users'} ({users.length})
         </button>
@@ -99,6 +102,47 @@ export default function Admin() {
             <span className="stat-number">{stats.totalReviews}</span>
             <span className="stat-label">{lang === 'bg' ? 'Отзиви' : 'Reviews'}</span>
           </div>
+        </div>
+      )}
+
+      {tab === 'pending' && (
+        <div className="admin-pending">
+          {venues.filter((v) => !v.is_verified).length === 0 ? (
+            <p className="no-results">{lang === 'bg' ? 'Няма зали за преглед.' : 'No venues pending review.'}</p>
+          ) : (
+            <div className="admin-table-wrapper">
+              <table className="admin-table">
+                <thead>
+                  <tr>
+                    <th>{lang === 'bg' ? 'Име' : 'Name'}</th>
+                    <th>{lang === 'bg' ? 'Град' : 'City'}</th>
+                    <th>{lang === 'bg' ? 'Цена/тренировка' : 'Price/session'}</th>
+                    <th>{lang === 'bg' ? 'Диапазон' : 'Range'}</th>
+                    <th>{lang === 'bg' ? 'Действия' : 'Actions'}</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {venues.filter((v) => !v.is_verified).map((v) => (
+                    <tr key={v.id}>
+                      <td><Link to={`/venues/${v.id}`}>{v.name}</Link></td>
+                      <td>{v.city ? (lang === 'bg' ? v.city.name_bg : v.city.name_en) : ''}</td>
+                      <td>{v.training_price}€</td>
+                      <td>{v.price_range}</td>
+                      <td>
+                        <button className="btn-sm btn-primary" onClick={() => handleVerify(v.id, true)}>
+                          {lang === 'bg' ? 'Одобри' : 'Approve'}
+                        </button>
+                        {' '}
+                        <button className="btn-sm btn-danger" onClick={() => handleDeleteVenue(v.id)}>
+                          {lang === 'bg' ? 'Изтрий' : 'Delete'}
+                        </button>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          )}
         </div>
       )}
 

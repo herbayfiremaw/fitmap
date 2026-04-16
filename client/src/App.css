@@ -539,10 +539,36 @@
   font-size: 1.5rem;
 }
 
+.venue-training-price {
+  font-size: 0.95rem;
+  color: #555;
+  font-weight: 500;
+}
+
 .venue-badges {
   display: flex;
   gap: 0.5rem;
+}
+
+.venue-card-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
   margin-top: 0.75rem;
+  gap: 0.5rem;
+}
+
+.venue-card-rating {
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
+  color: #d4a017;
+  font-size: 0.8rem;
+}
+
+.venue-card-rating .rating-text {
+  color: #666;
+  font-size: 0.75rem;
 }
 
 .badge {
@@ -557,6 +583,12 @@
 .badge.verified {
   background: #111;
   color: #fff;
+}
+
+.badge.badge-pending {
+  background: #fff3cd;
+  color: #856404;
+  border: 1px solid #ffc107;
 }
 
 .badge.featured {
@@ -638,10 +670,13 @@
 
 .filter-row {
   display: flex;
+  flex-wrap: wrap;
   gap: 0.75rem;
 }
 
 .filter-row select {
+  flex: 1;
+  min-width: 150px;
   padding: 0.6rem 0.75rem;
   border: 2px solid #e5e5e5;
   border-radius: 8px;
@@ -1442,6 +1477,17 @@
   color: #555;
 }
 
+.form-group label .required {
+  color: #e74c3c;
+  font-weight: 700;
+}
+
+.form-group label .optional {
+  color: #aaa;
+  font-weight: 400;
+  font-size: 0.75rem;
+}
+
 .form-group input,
 .form-group select,
 .form-group textarea {
@@ -1461,6 +1507,43 @@
 .form-group textarea:focus {
   outline: none;
   border-color: #111;
+}
+
+.location-picker {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.location-search {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.location-search input {
+  flex: 1;
+  padding: 0.65rem 0.85rem;
+  border: 2px solid #e5e5e5;
+  border-radius: 8px;
+  font-size: 0.9rem;
+  font-family: inherit;
+}
+
+.location-search input:focus {
+  outline: none;
+  border-color: #111;
+}
+
+.location-picker-map {
+  height: 300px !important;
+  border-radius: 8px;
+  border: 2px solid #e5e5e5;
+  cursor: crosshair;
+}
+
+.location-hint {
+  color: #888;
+  font-size: 0.8rem;
 }
 
 .tt-picker {
@@ -1963,40 +2046,44 @@
 
 .fav-btn {
   position: absolute;
-  top: 0.75rem;
-  right: 0.75rem;
-  background: rgba(255, 255, 255, 0.9);
-  border: none;
+  top: 0.5rem;
+  right: 0.5rem;
+  background: #fff;
+  border: 2px solid #e74c3c;
   border-radius: 50%;
-  width: 2rem;
-  height: 2rem;
-  font-size: 1.2rem;
+  width: 2.4rem;
+  height: 2.4rem;
+  font-size: 1.4rem;
   line-height: 1;
   cursor: pointer;
-  color: #999;
+  color: #e74c3c;
   display: flex;
   align-items: center;
   justify-content: center;
   transition: all 0.2s;
   z-index: 2;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
 }
 
 .fav-btn:hover {
-  color: #e74c3c;
-  transform: scale(1.15);
+  background: #e74c3c;
+  color: #fff;
+  transform: scale(1.1);
 }
 
 .fav-btn.fav-active {
-  color: #e74c3c;
+  background: #e74c3c;
+  color: #fff;
 }
 
 .fav-btn-lg {
   position: static;
-  width: 2.5rem;
-  height: 2.5rem;
-  font-size: 1.5rem;
-  background: transparent;
+  width: 2.8rem;
+  height: 2.8rem;
+  font-size: 1.6rem;
+  border: 2px solid #e74c3c;
   flex-shrink: 0;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
 }
 
 .venue-title-row {

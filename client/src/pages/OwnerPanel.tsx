@@ -7,6 +7,7 @@ import { citiesApi, type City } from '../api/cities';
 import { trainingTypesApi, type TrainingType } from '../api/training-types';
 import { schedulesApi, type Schedule, type CreateScheduleData, dayName } from '../api/schedules';
 import { trainersApi, type Trainer } from '../api/trainers';
+import { LocationPicker } from '../components/Map';
 
 const apiUrl = import.meta.env.VITE_API_URL ?? 'http://localhost:3000';
 
@@ -30,7 +31,7 @@ export default function OwnerPanel() {
   const [form, setForm] = useState<CreateVenueData>({
     name: '', description_bg: '', description_en: '', address: '',
     city_id: 0, latitude: 0, longitude: 0, phone: '', email: '',
-    website: '', price_range: '$$', amenities: [], training_type_ids: [],
+    website: '', training_price: 0, amenities: [], training_type_ids: [],
   });
 
   // Schedule form
@@ -48,12 +49,12 @@ export default function OwnerPanel() {
   }, [user, navigate]);
 
   const loadData = async () => {
-    const [allVenues, allCities, allTT] = await Promise.all([
-      venuesApi.getAll(),
+    const [myVenues, allCities, allTT] = await Promise.all([
+      venuesApi.getMine(),
       citiesApi.getAll(),
       trainingTypesApi.getAll(),
     ]);
-    setVenues(allVenues.filter((v) => v.owner_id === user!.id || user!.role === 'admin'));
+    setVenues(myVenues);
     setCities(allCities);
     setTrainingTypes(allTT);
   };
@@ -73,7 +74,7 @@ export default function OwnerPanel() {
       phone: venue.phone,
       email: venue.email,
       website: venue.website || '',
-      price_range: venue.price_range,
+      training_price: venue.training_price,
       amenities: venue.amenities,
       training_type_ids: venue.trainingTypes?.map((t) => t.id) || [],
     });
@@ -86,7 +87,7 @@ export default function OwnerPanel() {
     setForm({
       name: '', description_bg: '', description_en: '', address: '',
       city_id: cities[0]?.id || 0, latitude: 42.6977, longitude: 23.3219,
-      phone: '', email: '', website: '', price_range: '$$',
+      phone: '', email: '', website: '', training_price: 0,
       amenities: [], training_type_ids: [],
     });
     clearMessages();
@@ -236,7 +237,9 @@ export default function OwnerPanel() {
                   <h3>{v.name}</h3>
                   <p>{v.city ? t(v.city) : ''} — {v.address}</p>
                   <div className="owner-venue-badges">
-                    {v.is_verified && <span className="badge">{lang === 'bg' ? 'Верифицирана' : 'Verified'}</span>}
+                    {v.is_verified
+                      ? <span className="badge">{lang === 'bg' ? 'Верифицирана' : 'Verified'}</span>
+                      : <span className="badge badge-pending">{lang === 'bg' ? 'Чака одобрение' : 'Pending approval'}</span>}
                     {v.is_featured && <span className="badge">{lang === 'bg' ? 'Препоръчана' : 'Featured'}</span>}
                     <span className="badge badge-outline">{v.price_range}</span>
                   </div>
@@ -260,11 +263,11 @@ export default function OwnerPanel() {
 
           <div className="form-row">
             <div className="form-group">
-              <label>Name</label>
+              <label>{lang === 'bg' ? 'Име' : 'Name'} <span className="required">*</span></label>
               <input value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} required />
             </div>
             <div className="form-group">
-              <label>City</label>
+              <label>{lang === 'bg' ? 'Град' : 'City'} <span className="required">*</span></label>
               <select value={form.city_id} onChange={(e) => setForm({ ...form, city_id: Number(e.target.value) })}>
                 {cities.map((c) => <option key={c.id} value={c.id}>{t(c)}</option>)}
               </select>
@@ -272,60 +275,60 @@ export default function OwnerPanel() {
           </div>
 
           <div className="form-group">
-            <label>Address</label>
+            <label>{lang === 'bg' ? 'Адрес' : 'Address'} <span className="required">*</span></label>
             <input value={form.address} onChange={(e) => setForm({ ...form, address: e.target.value })} required />
           </div>
 
           <div className="form-row">
             <div className="form-group">
-              <label>Description (BG)</label>
+              <label>{lang === 'bg' ? 'Описание (BG)' : 'Description (BG)'} <span className="required">*</span></label>
               <textarea rows={3} value={form.description_bg} onChange={(e) => setForm({ ...form, description_bg: e.target.value })} required />
             </div>
             <div className="form-group">
-              <label>Description (EN)</label>
+              <label>{lang === 'bg' ? 'Описание (EN)' : 'Description (EN)'} <span className="required">*</span></label>
               <textarea rows={3} value={form.description_en} onChange={(e) => setForm({ ...form, description_en: e.target.value })} required />
             </div>
           </div>
 
-          <div className="form-row">
-            <div className="form-group">
-              <label>Latitude</label>
-              <input type="number" step="any" value={form.latitude} onChange={(e) => setForm({ ...form, latitude: Number(e.target.value) })} required />
-            </div>
-            <div className="form-group">
-              <label>Longitude</label>
-              <input type="number" step="any" value={form.longitude} onChange={(e) => setForm({ ...form, longitude: Number(e.target.value) })} required />
-            </div>
+          <div className="form-group">
+            <label>{lang === 'bg' ? 'Местоположение' : 'Location'} <span className="required">*</span></label>
+            <LocationPicker
+              lat={form.latitude}
+              lng={form.longitude}
+              onChange={(lat, lng) => setForm({ ...form, latitude: lat, longitude: lng })}
+              lang={lang}
+            />
           </div>
 
           <div className="form-row">
             <div className="form-group">
-              <label>Phone</label>
+              <label>{lang === 'bg' ? 'Телефон' : 'Phone'} <span className="required">*</span></label>
               <input value={form.phone} onChange={(e) => setForm({ ...form, phone: e.target.value })} required />
             </div>
             <div className="form-group">
-              <label>Email</label>
+              <label>{lang === 'bg' ? 'Имейл' : 'Email'} <span className="required">*</span></label>
               <input type="email" value={form.email} onChange={(e) => setForm({ ...form, email: e.target.value })} required />
             </div>
           </div>
 
           <div className="form-row">
             <div className="form-group">
-              <label>Website</label>
+              <label>{lang === 'bg' ? 'Уебсайт' : 'Website'} <span className="optional">({lang === 'bg' ? 'незадължително' : 'optional'})</span></label>
               <input value={form.website} onChange={(e) => setForm({ ...form, website: e.target.value })} />
             </div>
             <div className="form-group">
-              <label>Price Range</label>
-              <select value={form.price_range} onChange={(e) => setForm({ ...form, price_range: e.target.value as '$' | '$$' | '$$$' })}>
-                <option value="$">$ — Budget</option>
-                <option value="$$">$$ — Mid-range</option>
-                <option value="$$$">$$$ — Premium</option>
-              </select>
+              <label>{lang === 'bg' ? 'Цена на тренировка (EUR)' : 'Training cost (EUR)'} <span className="required">*</span></label>
+              <input type="number" min="0" step="0.5" value={form.training_price || ''} onChange={(e) => setForm({ ...form, training_price: parseFloat(e.target.value) || 0 })} placeholder={lang === 'bg' ? 'напр. 15' : 'e.g. 15'} required />
+              <small style={{ color: '#888' }}>
+                {lang === 'bg'
+                  ? 'Ценовият диапазон се изчислява автоматично: ≤10€ = €, 11–40€ = €€, >40€ = €€€'
+                  : 'Price range is calculated automatically: ≤10€ = €, 11–40€ = €€, >40€ = €€€'}
+              </small>
             </div>
           </div>
 
           <div className="form-group">
-            <label>Training Types</label>
+            <label>{lang === 'bg' ? 'Видове тренировки' : 'Training Types'} <span className="optional">({lang === 'bg' ? 'незадължително' : 'optional'})</span></label>
             <div className="tt-picker">
               {trainingTypes.map((tt) => (
                 <button
@@ -341,7 +344,7 @@ export default function OwnerPanel() {
           </div>
 
           <div className="form-group">
-            <label>{lang === 'bg' ? 'Удобства (разделени със запетая)' : 'Amenities (comma-separated)'}</label>
+            <label>{lang === 'bg' ? 'Удобства (разделени със запетая)' : 'Amenities (comma-separated)'} <span className="optional">({lang === 'bg' ? 'незадължително' : 'optional'})</span></label>
             <input
               value={form.amenities?.join(', ')}
               onChange={(e) => setForm({ ...form, amenities: e.target.value.split(',').map((s) => s.trim()).filter(Boolean) })}

@@ -16,7 +16,8 @@ export interface Venue {
   phone: string;
   email: string;
   website: string | null;
-  price_range: '$' | '$$' | '$$$';
+  training_price: number;
+  price_range: '€' | '€€' | '€€€';
   amenities: string[];
   photos: string[];
   is_verified: boolean;
@@ -24,6 +25,8 @@ export interface Venue {
   created_at: string;
   updated_at: string;
   trainingTypes: TrainingType[];
+  avg_rating: number;
+  review_count: number;
 }
 
 export interface CreateVenueData {
@@ -37,7 +40,7 @@ export interface CreateVenueData {
   phone: string;
   email: string;
   website?: string;
-  price_range: '$' | '$$' | '$$$';
+  training_price: number;
   amenities?: string[];
   training_type_ids?: number[];
 }
@@ -46,6 +49,8 @@ export type UpdateVenueData = Partial<CreateVenueData>;
 
 export const venuesApi = {
   getAll: () => api.get<Venue[]>('/venues').then((r) => r.data),
+  getAllAdmin: () => api.get<Venue[]>('/venues/admin').then((r) => r.data),
+  getMine: () => api.get<Venue[]>('/venues/mine').then((r) => r.data),
   getOne: (id: string) => api.get<Venue>(`/venues/${id}`).then((r) => r.data),
   create: (data: CreateVenueData) =>
     api.post<Venue>('/venues', data).then((r) => r.data),

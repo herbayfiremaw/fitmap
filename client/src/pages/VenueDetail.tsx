@@ -128,6 +128,7 @@ export default function VenueDetail() {
         </div>
         <div className="venue-meta">
           <span className="venue-price large">{venue.price_range}</span>
+          <span className="venue-training-price">{venue.training_price}€ / {lang === 'bg' ? 'тренировка' : 'session'}</span>
           {venue.is_verified && (
             <span className="badge verified">{lang === 'bg' ? 'Верифицирана' : 'Verified'}</span>
           )}

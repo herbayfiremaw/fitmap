@@ -35,9 +35,27 @@ export class VenuesController {
   constructor(private readonly venuesService: VenuesService) {}
 
   @Get()
-  @ApiOperation({ summary: 'Get all venues' })
+  @ApiOperation({ summary: 'Get all verified venues (public)' })
   findAll() {
     return this.venuesService.findAll();
+  }
+
+  @Get('admin')
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles(UserRole.ADMIN)
+  @ApiBearerAuth()
+  @ApiOperation({ summary: 'Get all venues including unverified (admin)' })
+  findAllAdmin() {
+    return this.venuesService.findAllAdmin();
+  }
+
+  @Get('mine')
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles(UserRole.OWNER, UserRole.ADMIN)
+  @ApiBearerAuth()
+  @ApiOperation({ summary: 'Get venues owned by current user' })
+  findMine(@CurrentUser() user: any) {
+    return this.venuesService.findByOwner(user.id);
   }
 
   @Get(':id')

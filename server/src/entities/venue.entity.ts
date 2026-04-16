@@ -18,9 +18,9 @@ import { Schedule } from './schedule.entity';
 import { Review } from './review.entity';
 
 export enum PriceRange {
-  LOW = '$',
-  MEDIUM = '$$',
-  HIGH = '$$$',
+  LOW = '€',
+  MEDIUM = '€€',
+  HIGH = '€€€',
 }
 
 @Entity('venues')
@@ -68,6 +68,9 @@ export class Venue {
 
   @Column({ nullable: true })
   website: string;
+
+  @Column({ type: 'decimal', precision: 8, scale: 2 })
+  training_price: number;
 
   @Column({ type: 'enum', enum: PriceRange })
   price_range: PriceRange;

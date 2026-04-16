@@ -1,13 +1,11 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import {
   IsArray,
-  IsEnum,
   IsNumber,
   IsOptional,
   IsString,
   IsEmail,
 } from 'class-validator';
-import { PriceRange } from '../../entities';
 
 export class CreateVenueDto {
   @ApiProperty({ example: 'FitBox Sofia' })
@@ -51,9 +49,9 @@ export class CreateVenueDto {
   @IsOptional()
   website?: string;
 
-  @ApiProperty({ enum: PriceRange, example: PriceRange.MEDIUM })
-  @IsEnum(PriceRange)
-  price_range: PriceRange;
+  @ApiProperty({ example: 25, description: 'Training cost in EUR per session' })
+  @IsNumber()
+  training_price: number;
 
   @ApiPropertyOptional({ example: ['parking', 'showers', 'lockers'] })
   @IsArray()

@@ -107,6 +107,7 @@ async function seed() {
       phone: '+359 2 987 6543',
       email: 'info@fightclub-sofia.bg',
       website: 'https://fightclub-sofia.bg',
+      training_price: 25,
       price_range: PriceRange.MEDIUM,
       amenities: ['Съблекални', 'Душове', 'Паркинг', 'Магазин'],
       photos: [
@@ -130,6 +131,7 @@ async function seed() {
       phone: '+359 32 123 456',
       email: 'hello@zenyoga.bg',
       website: 'https://zenyoga.bg',
+      training_price: 8,
       price_range: PriceRange.LOW,
       amenities: ['Съблекални', 'Душове', 'Чай бар'],
       photos: [
@@ -151,6 +153,7 @@ async function seed() {
       longitude: 27.9147,
       phone: '+359 52 555 789',
       email: 'info@irongym-varna.bg',
+      training_price: 7,
       price_range: PriceRange.LOW,
       amenities: ['Съблекални', 'Душове', 'Сауна', 'Паркинг'],
       photos: [
@@ -174,6 +177,7 @@ async function seed() {
       longitude: 27.4626,
       phone: '+359 56 888 321',
       email: 'info@crossfit-burgas.bg',
+      training_price: 20,
       price_range: PriceRange.MEDIUM,
       amenities: ['Съблекални', 'Душове', 'Паркинг'],
       photos: [
@@ -196,6 +200,7 @@ async function seed() {
       phone: '+359 2 444 5566',
       email: 'info@danceacademy.bg',
       website: 'https://danceacademy.bg',
+      training_price: 15,
       price_range: PriceRange.MEDIUM,
       amenities: ['Съблекални', 'Огледална зала'],
       photos: [
@@ -217,6 +222,7 @@ async function seed() {
       longitude: 25.6345,
       phone: '+359 42 600 700',
       email: 'info@aquasport-sz.bg',
+      training_price: 45,
       price_range: PriceRange.HIGH,
       amenities: ['Басейн', 'Съблекални', 'Душове', 'Сауна', 'Паркинг'],
       photos: [

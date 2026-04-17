@@ -10,6 +10,8 @@ import { useAuth } from '../context/AuthContext';
 import { useLang } from '../context/LangContext';
 
 const ITEMS_PER_PAGE = 12;
+const apiUrl = import.meta.env.VITE_API_URL ?? 'http://localhost:3000';
+const photoSrc = (url: string) => url.startsWith('/') ? `${apiUrl}${url}` : url;
 
 export default function Venues() {
   const navigate = useNavigate();
@@ -185,32 +187,43 @@ export default function Venues() {
               <div key={venue.id} className="venue-card-wrapper">
                 <Link
                   to={`/venues/${venue.id}`}
-                  className="venue-card"
+                  className="venue-card has-photo"
                 >
-                  <div className="venue-card-header">
-                    <h3>{venue.name}</h3>
-                    <span className="venue-price">{venue.price_range}</span>
-                  </div>
-                  <p className="venue-city">{venue.city ? t(venue.city) : ''}</p>
-                  <p className="venue-address">{venue.address}</p>
-                  <div className="venue-tags">
-                    {venue.trainingTypes?.map((tt) => (
-                      <span key={tt.id} className="tag-small">
-                        {t(tt)}
-                      </span>
-                    ))}
-                  </div>
-                  <div className="venue-card-footer">
-                    <div className="venue-badges">
-                      {venue.is_verified && <span className="badge verified">{lang === 'bg' ? 'Верифицирана' : 'Verified'}</span>}
-                      {venue.is_featured && <span className="badge featured">{lang === 'bg' ? 'Препоръчана' : 'Featured'}</span>}
+                  {venue.photos?.length > 0 ? (
+                    <div className="venue-card-img">
+                      <img src={photoSrc(venue.photos[0])} alt={venue.name} />
                     </div>
-                    {venue.avg_rating > 0 && (
-                      <span className="venue-card-rating">
-                        <StarsDisplay rating={venue.avg_rating} size={14} />
-                        <span className="rating-text">{venue.avg_rating.toFixed(1)} ({venue.review_count})</span>
-                      </span>
-                    )}
+                  ) : (
+                    <div className="venue-card-img venue-card-img-empty">
+                      <span>{venue.name.charAt(0)}</span>
+                    </div>
+                  )}
+                  <div className="venue-card-body">
+                    <div className="venue-card-header">
+                      <h3>{venue.name}</h3>
+                      <span className="venue-price">{venue.price_range}</span>
+                    </div>
+                    <p className="venue-city">{venue.city ? t(venue.city) : ''}</p>
+                    <p className="venue-address">{venue.address}</p>
+                    <div className="venue-tags">
+                      {venue.trainingTypes?.map((tt) => (
+                        <span key={tt.id} className="tag-small">
+                          {t(tt)}
+                        </span>
+                      ))}
+                    </div>
+                    <div className="venue-card-footer">
+                      <div className="venue-badges">
+                        {venue.is_verified && <span className="badge verified">{lang === 'bg' ? 'Верифицирана' : 'Verified'}</span>}
+                        {venue.is_featured && <span className="badge featured">{lang === 'bg' ? 'Препоръчана' : 'Featured'}</span>}
+                      </div>
+                      {venue.avg_rating > 0 && (
+                        <span className="venue-card-rating">
+                          <StarsDisplay rating={venue.avg_rating} size={14} />
+                          <span className="rating-text">{venue.avg_rating.toFixed(1)} ({venue.review_count})</span>
+                        </span>
+                      )}
+                    </div>
                   </div>
                 </Link>
                 <button

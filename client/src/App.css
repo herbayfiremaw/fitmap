@@ -491,6 +491,43 @@
   transition: all 0.2s;
 }
 
+.venue-card.has-photo {
+  padding: 0;
+  overflow: hidden;
+}
+
+.venue-card.has-photo .venue-card-body {
+  padding: 1.25rem;
+}
+
+.venue-card-img {
+  width: 100%;
+  height: 180px;
+  overflow: hidden;
+  background: #f5f5f5;
+}
+
+.venue-card-img img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.3s;
+}
+
+.venue-card:hover .venue-card-img img {
+  transform: scale(1.05);
+}
+
+.venue-card-img-empty {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #111;
+  color: #fff;
+  font-size: 2.5rem;
+  font-weight: 800;
+}
+
 .venue-card:hover {
   border-color: #111;
   text-decoration: none;
@@ -1245,7 +1282,7 @@
   flex-direction: column;
   align-items: center;
   text-align: center;
-  padding: 1.5rem;
+  padding: 1.75rem 1.5rem;
   background: #fff;
   border: 2px solid #f0f0f0;
   border-radius: 12px;
@@ -1262,17 +1299,18 @@
 }
 
 .trainer-card-avatar {
-  width: 72px;
-  height: 72px;
+  width: 88px;
+  height: 88px;
   border-radius: 50%;
   background: #111;
   color: #fff;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 1.5rem;
+  font-size: 1.8rem;
   font-weight: 700;
   overflow: hidden;
+  border: 3px solid #f0f0f0;
 }
 
 .trainer-card-avatar img {
@@ -1291,6 +1329,13 @@
   color: #888;
 }
 
+.trainer-card-bio {
+  font-size: 0.8rem;
+  color: #666;
+  line-height: 1.4;
+  margin: 0;
+}
+
 /* ========================
    TRAINER DETAIL
    ======================== */
@@ -1300,11 +1345,28 @@
   margin: 0 auto;
 }
 
-.trainer-profile {
+.back-link {
+  display: inline-block;
+  font-size: 0.9rem;
+  color: #555;
+  text-decoration: none;
+  margin-bottom: 1.5rem;
+  transition: color 0.2s;
+}
+
+.back-link:hover {
+  color: #111;
+}
+
+.trainer-hero {
   display: flex;
   align-items: center;
   gap: 2rem;
-  margin-bottom: 2rem;
+  margin-bottom: 2.5rem;
+  padding: 2rem;
+  background: #fafafa;
+  border-radius: 16px;
+  border: 2px solid #f0f0f0;
 }
 
 .trainer-profile-avatar {
@@ -1320,6 +1382,14 @@
   font-weight: 700;
   overflow: hidden;
   flex-shrink: 0;
+  border: 3px solid #e5e5e5;
+}
+
+.trainer-profile-avatar.large {
+  width: 120px;
+  height: 120px;
+  font-size: 3rem;
+  border: 4px solid #e5e5e5;
 }
 
 .trainer-profile-avatar img {
@@ -1342,6 +1412,147 @@
 .trainer-venue-link a {
   color: #111;
   font-weight: 600;
+  text-decoration: none;
+}
+
+.trainer-venue-link a:hover {
+  text-decoration: underline;
+}
+
+.trainer-specialties {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-top: 0.5rem;
+}
+
+.trainer-content {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+
+.trainer-section h2 {
+  font-size: 1.3rem;
+  margin-bottom: 1rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 2px solid #f0f0f0;
+}
+
+.trainer-bio-text {
+  font-size: 1rem;
+  line-height: 1.7;
+  color: #333;
+}
+
+.trainer-bio-empty {
+  font-size: 0.9rem;
+  color: #aaa;
+  font-style: italic;
+}
+
+.trainer-stats {
+  display: flex;
+  gap: 1rem;
+}
+
+.trainer-stat {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 1.25rem;
+  background: #fff;
+  border: 2px solid #f0f0f0;
+  border-radius: 12px;
+}
+
+.trainer-stat-number {
+  font-size: 1.8rem;
+  font-weight: 800;
+  color: #111;
+}
+
+.trainer-stat-label {
+  font-size: 0.75rem;
+  color: #888;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-top: 0.25rem;
+}
+
+.trainer-schedule-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  gap: 1rem;
+}
+
+.trainer-day-card {
+  background: #fff;
+  border: 2px solid #f0f0f0;
+  border-radius: 12px;
+  padding: 1rem;
+}
+
+.trainer-day-name {
+  font-size: 0.9rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: #111;
+  margin-bottom: 0.75rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 2px solid #f0f0f0;
+}
+
+.trainer-session {
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+  padding: 0.5rem 0;
+}
+
+.trainer-session + .trainer-session {
+  border-top: 1px solid #f5f5f5;
+}
+
+.trainer-session-time {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: #111;
+}
+
+.trainer-session-type {
+  font-size: 0.8rem;
+  color: #888;
+}
+
+.trainer-venue-card {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1.25rem;
+  background: #fff;
+  border: 2px solid #f0f0f0;
+  border-radius: 12px;
+  text-decoration: none;
+  color: inherit;
+  transition: all 0.2s;
+}
+
+.trainer-venue-card:hover {
+  border-color: #111;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
+}
+
+.trainer-venue-card-name {
+  font-weight: 600;
+  font-size: 1rem;
+}
+
+.trainer-venue-card-arrow {
+  font-size: 1.2rem;
+  color: #888;
 }
 
 /* ========================
@@ -1835,15 +2046,28 @@
     padding: 1.25rem;
   }
 
-  .trainer-profile {
+  .trainer-hero {
     flex-direction: column;
     text-align: center;
+    padding: 1.5rem;
   }
 
   .trainer-profile-info {
     display: flex;
     flex-direction: column;
     align-items: center;
+  }
+
+  .trainer-specialties {
+    justify-content: center;
+  }
+
+  .trainer-stats {
+    flex-direction: column;
+  }
+
+  .trainer-schedule-grid {
+    grid-template-columns: 1fr;
   }
 
   .owner-venue-card {
@@ -1998,6 +2222,54 @@
     align-items: flex-start;
     gap: 0.75rem;
   }
+
+  /* Venue card photos */
+  .venue-card-img {
+    height: 160px;
+  }
+
+  /* Location picker */
+  .location-picker-map {
+    height: 250px !important;
+  }
+
+  .location-search {
+    flex-direction: column;
+  }
+
+  .location-search input {
+    width: 100%;
+  }
+
+  /* Venue detail title row */
+  .venue-title-row {
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  .venue-title-row h1 {
+    font-size: 1.6rem;
+  }
+
+  .venue-meta {
+    gap: 0.5rem;
+  }
+
+  /* Admin pending table */
+  .admin-pending .admin-table {
+    font-size: 0.8rem;
+  }
+
+  /* Owner panel badges */
+  .owner-venue-badges {
+    flex-wrap: wrap;
+  }
+
+  /* Pagination */
+  .pagination {
+    flex-wrap: wrap;
+    justify-content: center;
+  }
 }
 
 /* Small mobile */
@@ -2030,6 +2302,96 @@
   .schedule-table td {
     padding: 0.5rem 0.35rem;
     font-size: 0.8rem;
+  }
+
+  /* Venue cards */
+  .venue-card-img {
+    height: 140px;
+  }
+
+  .venue-card.has-photo .venue-card-body {
+    padding: 1rem;
+  }
+
+  /* Trainer cards */
+  .trainer-card-avatar {
+    width: 72px;
+    height: 72px;
+    font-size: 1.5rem;
+  }
+
+  .trainer-card-bio {
+    display: none;
+  }
+
+  /* Trainer detail */
+  .trainer-hero {
+    padding: 1rem;
+  }
+
+  .trainer-profile-avatar.large {
+    width: 90px;
+    height: 90px;
+    font-size: 2.2rem;
+  }
+
+  .trainer-profile-info h1 {
+    font-size: 1.5rem;
+  }
+
+  .trainer-stat {
+    padding: 0.75rem;
+  }
+
+  .trainer-stat-number {
+    font-size: 1.4rem;
+  }
+
+  /* Admin stats */
+  .admin-stats {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .stat-number {
+    font-size: 1.8rem;
+  }
+
+  /* Fav button */
+  .fav-btn {
+    width: 2.2rem;
+    height: 2.2rem;
+    font-size: 1.2rem;
+  }
+
+  .fav-btn-lg {
+    width: 2.4rem;
+    height: 2.4rem;
+    font-size: 1.3rem;
+  }
+
+  /* Venue detail */
+  .venue-price.large {
+    font-size: 1.2rem;
+  }
+
+  .gallery-grid {
+    grid-template-columns: 1fr 1fr;
+    gap: 0.5rem;
+  }
+
+  /* Review form */
+  .review-form {
+    padding: 1rem;
+  }
+
+  /* Owner form */
+  .owner-venue-actions {
+    gap: 0.4rem;
+  }
+
+  .owner-venue-actions .btn-sm {
+    font-size: 0.75rem;
+    padding: 0.35rem 0.6rem;
   }
 }
 

@@ -4,6 +4,9 @@ import { favoritesApi, type Favorite } from '../api/favorites';
 import { useAuth } from '../context/AuthContext';
 import { useLang } from '../context/LangContext';
 
+const apiUrl = import.meta.env.VITE_API_URL ?? 'http://localhost:3000';
+const photoSrc = (url: string) => url.startsWith('/') ? `${apiUrl}${url}` : url;
+
 export default function Favorites() {
   const { user } = useAuth();
   const { lang, t } = useLang();
@@ -45,18 +48,29 @@ export default function Favorites() {
       ) : (
         <div className="card-grid">
           {favorites.map((fav) => (
-            <div key={fav.id} className="venue-card favorite-card">
+            <div key={fav.id} className="venue-card has-photo favorite-card">
               <Link to={`/venues/${fav.venue.id}`} className="favorite-card-link">
-                <div className="venue-card-header">
-                  <h3>{fav.venue.name}</h3>
-                  <span className="venue-price">{fav.venue.price_range}</span>
-                </div>
-                <p className="venue-city">{fav.venue.city ? t(fav.venue.city) : ''}</p>
-                <p className="venue-address">{fav.venue.address}</p>
-                <div className="venue-tags">
-                  {fav.venue.trainingTypes?.map((tt) => (
-                    <span key={tt.id} className="tag-small">{t(tt)}</span>
-                  ))}
+                {fav.venue.photos?.length > 0 ? (
+                  <div className="venue-card-img">
+                    <img src={photoSrc(fav.venue.photos[0])} alt={fav.venue.name} />
+                  </div>
+                ) : (
+                  <div className="venue-card-img venue-card-img-empty">
+                    <span>{fav.venue.name.charAt(0)}</span>
+                  </div>
+                )}
+                <div className="venue-card-body">
+                  <div className="venue-card-header">
+                    <h3>{fav.venue.name}</h3>
+                    <span className="venue-price">{fav.venue.price_range}</span>
+                  </div>
+                  <p className="venue-city">{fav.venue.city ? t(fav.venue.city) : ''}</p>
+                  <p className="venue-address">{fav.venue.address}</p>
+                  <div className="venue-tags">
+                    {fav.venue.trainingTypes?.map((tt) => (
+                      <span key={tt.id} className="tag-small">{t(tt)}</span>
+                    ))}
+                  </div>
                 </div>
               </Link>
               <button

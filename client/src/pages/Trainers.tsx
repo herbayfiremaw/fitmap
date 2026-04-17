@@ -48,31 +48,37 @@ export default function Trainers() {
         <p className="no-results">{lang === 'bg' ? 'Няма намерени треньори' : 'No trainers found'}</p>
       ) : (
         <div className="card-grid">
-          {paginated.map((trainer) => (
-            <Link key={trainer.id} to={`/trainers/${trainer.id}`} className="trainer-card">
-              <div className="trainer-card-avatar">
-                {trainer.photo_url ? (
-                  <img
-                    src={trainer.photo_url.startsWith('/') ? `${apiUrl}${trainer.photo_url}` : trainer.photo_url}
-                    alt={t(trainer)}
-                  />
-                ) : (
-                  <span>{t(trainer).charAt(0).toUpperCase()}</span>
-                )}
-              </div>
-              <h3>{t(trainer)}</h3>
-              {trainer.venue && (
-                <p className="trainer-venue">{trainer.venue.name}</p>
-              )}
-              {trainer.specialties.length > 0 && (
-                <div className="venue-tags">
-                  {trainer.specialties.slice(0, 3).map((s) => (
-                    <span key={s} className="tag-small">{s}</span>
-                  ))}
+          {paginated.map((trainer) => {
+            const bio = lang === 'bg' ? trainer.bio_bg : trainer.bio_en;
+            return (
+              <Link key={trainer.id} to={`/trainers/${trainer.id}`} className="trainer-card">
+                <div className="trainer-card-avatar">
+                  {trainer.photo_url ? (
+                    <img
+                      src={trainer.photo_url.startsWith('/') ? `${apiUrl}${trainer.photo_url}` : trainer.photo_url}
+                      alt={t(trainer)}
+                    />
+                  ) : (
+                    <span>{t(trainer).charAt(0).toUpperCase()}</span>
+                  )}
                 </div>
-              )}
-            </Link>
-          ))}
+                <h3>{t(trainer)}</h3>
+                {trainer.venue && (
+                  <p className="trainer-venue">{trainer.venue.name}</p>
+                )}
+                {bio && (
+                  <p className="trainer-card-bio">{bio.length > 80 ? bio.slice(0, 80) + '...' : bio}</p>
+                )}
+                {trainer.specialties.length > 0 && (
+                  <div className="venue-tags">
+                    {trainer.specialties.map((s) => (
+                      <span key={s} className="tag-small">{s}</span>
+                    ))}
+                  </div>
+                )}
+              </Link>
+            );
+          })}
         </div>
       )}
 

@@ -12,6 +12,9 @@ const LazyVenuesMap = lazy(() =>
   import('../components/Map').then((m) => ({ default: m.VenuesMap })),
 );
 
+const apiUrl = import.meta.env.VITE_API_URL ?? 'http://localhost:3000';
+const photoSrc = (url: string) => url.startsWith('/') ? `${apiUrl}${url}` : url;
+
 export default function Home() {
   const navigate = useNavigate();
   const { lang, t } = useLang();
@@ -120,19 +123,32 @@ export default function Home() {
               <Link
                 key={venue.id}
                 to={`/venues/${venue.id}`}
-                className="venue-card reveal-child"
+                className="venue-card has-photo reveal-child"
               >
-                <h3>{venue.name}</h3>
-                <p className="venue-city">{venue.city ? t(venue.city) : ''}</p>
-                <p className="venue-address">{venue.address}</p>
-                <div className="venue-tags">
-                  {venue.trainingTypes?.map((tt) => (
-                    <span key={tt.id} className="tag-small">
-                      {t(tt)}
-                    </span>
-                  ))}
+                {venue.photos?.length > 0 ? (
+                  <div className="venue-card-img">
+                    <img src={photoSrc(venue.photos[0])} alt={venue.name} />
+                  </div>
+                ) : (
+                  <div className="venue-card-img venue-card-img-empty">
+                    <span>{venue.name.charAt(0)}</span>
+                  </div>
+                )}
+                <div className="venue-card-body">
+                  <div className="venue-card-header">
+                    <h3>{venue.name}</h3>
+                    <span className="venue-price">{venue.price_range}</span>
+                  </div>
+                  <p className="venue-city">{venue.city ? t(venue.city) : ''}</p>
+                  <p className="venue-address">{venue.address}</p>
+                  <div className="venue-tags">
+                    {venue.trainingTypes?.map((tt) => (
+                      <span key={tt.id} className="tag-small">
+                        {t(tt)}
+                      </span>
+                    ))}
+                  </div>
                 </div>
-                <span className="venue-price">{venue.price_range}</span>
               </Link>
             ))}
           </div>

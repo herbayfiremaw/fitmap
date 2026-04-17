@@ -18,14 +18,22 @@ export default function TrainerDetail() {
   const bio = lang === 'bg' ? trainer.bio_bg : trainer.bio_en;
   const baseUrl = import.meta.env.VITE_API_URL ?? 'http://localhost:3000';
 
+  // Group schedules by day
+  const schedulesByDay = (trainer.schedules || []).reduce<Record<number, typeof trainer.schedules>>((acc, s) => {
+    (acc[s.day_of_week] ??= []).push(s);
+    return acc;
+  }, {});
+  const sortedDays = Object.keys(schedulesByDay).map(Number).sort((a, b) => a - b);
+
   return (
     <div className="trainer-detail">
       <Link to="/trainers" className="back-link">
-        {lang === 'bg' ? 'Назад към Треньорите' : 'Back to Trainers'}
+        &larr; {lang === 'bg' ? 'Всички Треньори' : 'All Trainers'}
       </Link>
 
-      <div className="trainer-profile">
-        <div className="trainer-profile-avatar">
+      {/* Hero section */}
+      <div className="trainer-hero">
+        <div className="trainer-profile-avatar large">
           {trainer.photo_url ? (
             <img
               src={trainer.photo_url.startsWith('/') ? `${baseUrl}${trainer.photo_url}` : trainer.photo_url}
@@ -40,11 +48,12 @@ export default function TrainerDetail() {
           <h1>{t(trainer)}</h1>
           {trainer.venue && (
             <p className="trainer-venue-link">
+              {lang === 'bg' ? 'Треньор в ' : 'Trainer at '}
               <Link to={`/venues/${trainer.venue.id}`}>{trainer.venue.name}</Link>
             </p>
           )}
           {trainer.specialties.length > 0 && (
-            <div className="venue-tags">
+            <div className="trainer-specialties">
               {trainer.specialties.map((s) => (
                 <span key={s} className="tag">{s}</span>
               ))}
@@ -53,42 +62,67 @@ export default function TrainerDetail() {
         </div>
       </div>
 
-      {bio && (
-        <section className="section">
-          <h2>{lang === 'bg' ? 'Биография' : 'About'}</h2>
-          <p>{bio}</p>
-        </section>
-      )}
+      {/* Content grid */}
+      <div className="trainer-content">
+        {/* Bio */}
+        <div className="trainer-section">
+          <h2>{lang === 'bg' ? 'За мен' : 'About'}</h2>
+          {bio ? (
+            <p className="trainer-bio-text">{bio}</p>
+          ) : (
+            <p className="trainer-bio-empty">
+              {lang === 'bg' ? 'Няма добавена биография.' : 'No bio added yet.'}
+            </p>
+          )}
+        </div>
 
-      {trainer.schedules && trainer.schedules.length > 0 && (
-        <section className="section">
-          <h2>{lang === 'bg' ? 'Програма' : 'Schedule'}</h2>
-          <table className="schedule-table">
-            <thead>
-              <tr>
-                <th>{lang === 'bg' ? 'Ден' : 'Day'}</th>
-                <th>{lang === 'bg' ? 'Час' : 'Time'}</th>
-                <th>{lang === 'bg' ? 'Тренировка' : 'Training'}</th>
-                <th>{lang === 'bg' ? 'Зала' : 'Venue'}</th>
-              </tr>
-            </thead>
-            <tbody>
-              {trainer.schedules.map((s) => (
-                <tr key={s.id}>
-                  <td>{dayName(s.day_of_week, lang)}</td>
-                  <td>{s.start_time} - {s.end_time}</td>
-                  <td>{s.trainingType ? t(s.trainingType) : ''}</td>
-                  <td>
-                    <Link to={`/venues/${s.venue_id}`}>
-                      {trainer.venue?.name || (lang === 'bg' ? 'Виж зала' : 'View venue')}
-                    </Link>
-                  </td>
-                </tr>
+        {/* Quick stats */}
+        <div className="trainer-stats">
+          <div className="trainer-stat">
+            <span className="trainer-stat-number">{trainer.specialties.length}</span>
+            <span className="trainer-stat-label">{lang === 'bg' ? 'Специалности' : 'Specialties'}</span>
+          </div>
+          <div className="trainer-stat">
+            <span className="trainer-stat-number">{(trainer.schedules || []).length}</span>
+            <span className="trainer-stat-label">{lang === 'bg' ? 'Тренировки/седмица' : 'Sessions/week'}</span>
+          </div>
+          <div className="trainer-stat">
+            <span className="trainer-stat-number">{sortedDays.length}</span>
+            <span className="trainer-stat-label">{lang === 'bg' ? 'Дни/седмица' : 'Days/week'}</span>
+          </div>
+        </div>
+
+        {/* Schedule */}
+        {sortedDays.length > 0 && (
+          <div className="trainer-section">
+            <h2>{lang === 'bg' ? 'Седмична Програма' : 'Weekly Schedule'}</h2>
+            <div className="trainer-schedule-grid">
+              {sortedDays.map((day) => (
+                <div key={day} className="trainer-day-card">
+                  <h3 className="trainer-day-name">{dayName(day, lang)}</h3>
+                  {schedulesByDay[day]!.map((s) => (
+                    <div key={s.id} className="trainer-session">
+                      <span className="trainer-session-time">{s.start_time} - {s.end_time}</span>
+                      <span className="trainer-session-type">{s.trainingType ? t(s.trainingType) : ''}</span>
+                    </div>
+                  ))}
+                </div>
               ))}
-            </tbody>
-          </table>
-        </section>
-      )}
+            </div>
+          </div>
+        )}
+
+        {/* Venue card */}
+        {trainer.venue && (
+          <div className="trainer-section">
+            <h2>{lang === 'bg' ? 'Зала' : 'Venue'}</h2>
+            <Link to={`/venues/${trainer.venue.id}`} className="trainer-venue-card">
+              <span className="trainer-venue-card-name">{trainer.venue.name}</span>
+              <span className="trainer-venue-card-arrow">&rarr;</span>
+            </Link>
+          </div>
+        )}
+      </div>
     </div>
   );
 }

@@ -116,29 +116,40 @@ export default function Admin() {
                   <tr>
                     <th>{lang === 'bg' ? 'Име' : 'Name'}</th>
                     <th>{lang === 'bg' ? 'Град' : 'City'}</th>
+                    <th>{lang === 'bg' ? 'Причина' : 'Reason'}</th>
                     <th>{lang === 'bg' ? 'Цена/тренировка' : 'Price/session'}</th>
                     <th>{lang === 'bg' ? 'Диапазон' : 'Range'}</th>
                     <th>{lang === 'bg' ? 'Действия' : 'Actions'}</th>
                   </tr>
                 </thead>
                 <tbody>
-                  {venues.filter((v) => !v.is_verified).map((v) => (
-                    <tr key={v.id}>
-                      <td><Link to={`/venues/${v.id}`}>{v.name}</Link></td>
-                      <td>{v.city ? (lang === 'bg' ? v.city.name_bg : v.city.name_en) : ''}</td>
-                      <td>{v.training_price}€</td>
-                      <td>{v.price_range}</td>
-                      <td>
-                        <button className="btn-sm btn-primary" onClick={() => handleVerify(v.id, true)}>
-                          {lang === 'bg' ? 'Одобри' : 'Approve'}
-                        </button>
-                        {' '}
-                        <button className="btn-sm btn-danger" onClick={() => handleDeleteVenue(v.id)}>
-                          {lang === 'bg' ? 'Изтрий' : 'Delete'}
-                        </button>
-                      </td>
-                    </tr>
-                  ))}
+                  {venues.filter((v) => !v.is_verified).map((v) => {
+                    const isNew = v.created_at === v.updated_at;
+                    return (
+                      <tr key={v.id}>
+                        <td><Link to={`/venues/${v.id}`}>{v.name}</Link></td>
+                        <td>{v.city ? (lang === 'bg' ? v.city.name_bg : v.city.name_en) : ''}</td>
+                        <td>
+                          <span className={`badge ${isNew ? 'badge-new' : 'badge-edited'}`}>
+                            {isNew
+                              ? (lang === 'bg' ? 'Нова зала' : 'New venue')
+                              : (lang === 'bg' ? 'Редактирана' : 'Edited')}
+                          </span>
+                        </td>
+                        <td>{v.training_price}€</td>
+                        <td>{v.price_range}</td>
+                        <td>
+                          <button className="btn-sm btn-primary" onClick={() => handleVerify(v.id, true)}>
+                            {lang === 'bg' ? 'Одобри' : 'Approve'}
+                          </button>
+                          {' '}
+                          <button className="btn-sm btn-danger" onClick={() => handleDeleteVenue(v.id)}>
+                            {lang === 'bg' ? 'Изтрий' : 'Delete'}
+                          </button>
+                        </td>
+                      </tr>
+                    );
+                  })}
                 </tbody>
               </table>
             </div>
